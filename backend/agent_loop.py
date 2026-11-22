@@ -419,7 +419,7 @@ class AgentLoop:
 
                 # Try recipe replay first — skip LLM entirely if we have a
                 # high-confidence recipe for this screen state.
-                matched_recipe = self.recipes.match(step_phash)
+                matched_recipe = None if role == "first_play" else self.recipes.match(step_phash)
                 check_text, progress, goal_done, escalated = "", None, False, False
                 if matched_recipe:
                     await _console_log(f"  [recipe] Matched '{matched_recipe.name}' — replaying {len(matched_recipe.actions)} action(s) without LLM")
@@ -433,7 +433,7 @@ class AgentLoop:
                     _active_recipe = None
 
                     experience_text = ""
-                    past = self.experience.recall(step_phash, role=role)
+                    past = [] if role == "first_play" else self.experience.recall(step_phash, role=role)
                     if past:
                         experience_text = self.experience.format_for_prompt(past)
                         await _console_log(f"  [experience] Recalled {len(past)} similar past experience(s)")
@@ -487,7 +487,7 @@ class AgentLoop:
 
                     # Run the synchronous LLM call in a thread to avoid blocking asyncio loop
                     history_text = "\n".join(step_history) if step_history else ""
-                    memories_text = self.memories.format_for_prompt(game=memory_game)
+                    memories_text = "" if role == "first_play" else self.memories.format_for_prompt(game=memory_game)
                     second_frame = None
                     if self.dual_frame:
                         await asyncio.sleep(0.4)

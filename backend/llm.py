@@ -6,6 +6,7 @@ import base64
 import os
 import tempfile
 import time
+from pathlib import Path
 
 try:
     import requests as _requests
@@ -76,6 +77,13 @@ RULES:
 # ── Role definitions ──
 # Each role provides instructions that modify the agent's behaviour and narration style.
 ROLE_PROMPTS = {
+    "first_play": (
+        "初見のゲームを遊ぶ日本語の実況者。慎重だが、未知のアイテムには好奇心が勝つ。"
+        "今回の画面、渡された操作説明、今回のプレイで観察した出来事を頼りに選択する。"
+        "未確認の攻略知識や先の展開を持ち込まず、予想と実際の結果を区別する。"
+        "narrationには視聴者に聞かせたい自然な日本語の一言を入れる。"
+        "操作コマンド名とJSONキーは指定の英語のまま返す。"
+    ),
     "gamer": (
         "ROLE: Gamer — You are playing this game to win and have a good time.\n"
         "- Play skillfully and make smart strategic decisions.\n"
@@ -521,7 +529,7 @@ USER INSTRUCTIONS FOR THE SESSION:
 # Providers that shell out to a local, pre-authenticated CLI binary.
 # No API key and no `requests` dependency required — each CLI uses its
 # own stored login (e.g. ~/.claude credentials, agy account, gemini auth).
-CLI_PROVIDERS = frozenset({"gemini_cli", "claude_code_cli", "antigravity_cli"})
+CLI_PROVIDERS = frozenset({"codex_cli", "gemini_cli", "claude_code_cli", "antigravity_cli"})
 
 
 def is_cli_provider(provider: str) -> bool:
@@ -750,6 +758,35 @@ class LLMIntegration:
             except json.JSONDecodeError as e:
                 raise ValueError(f"Failed to parse JSON even after repair. Error: {e}\nJSON string: {json_str[:300]}")
 
+    def _call_codex(self, prompt_text, image_base64, model_name, expect_json):
+        binary = find_cli_binary("codex")
+        if not binary:
+            raise RuntimeError("Codex CLI not found on PATH. Install it and run codex login.")
+        with tempfile.TemporaryDirectory(prefix="gamecli-") as directory:
+            output = Path(directory, "reply.txt")
+            cmd = [binary, "exec", "--ignore-user-config", "--ephemeral", "--skip-git-repo-check",
+                   "--sandbox", "read-only", "-c", "forced_login_method=chatgpt",
+                   "-c", "web_search=disabled", "--disable", "apps", "--disable", "plugins",
+                   "--disable", "shell_tool", "--output-last-message", str(output)]
+            if model_name != "default":
+                cmd.extend(["--model", model_name])
+            for index, frame in enumerate(filter(None, (image_base64, self._extra_image))):
+                path = Path(directory, f"frame-{index}.jpg")
+                path.write_bytes(base64.b64decode(frame, validate=True))
+                cmd.extend(["--image", str(path)])
+            cmd.append("-")
+            result = subprocess.run(
+                cmd, cwd=directory, input=prompt_text, capture_output=True,
+                text=True, encoding="utf-8", errors="replace", timeout=180,
+            )
+            if result.returncode:
+                # stderr may also contain the entire prompt and session metadata.
+                lines = [s for s in result.stderr.splitlines() if "error" in s.lower()]
+                detail = lines[-1][:400] if lines else f"exit {result.returncode}"
+                raise RuntimeError(f"Codex CLI: {detail}")
+            content = output.read_text(encoding="utf-8").strip()
+            return self._extract_json(content) if expect_json else content
+
     def _call_cli(self, prompt_text: str, image_base64: str, model_name: str,
                   expect_json: bool = True, reuse_image: bool = False):
         """Call a local agentic CLI: Gemini CLI, Claude Code, or Antigravity (agy).
@@ -758,8 +795,10 @@ class LLMIntegration:
         If reuse_image=True, skips writing the screenshot (assumes it was
         already written by a prior call in the same step).
         """
-        if not re.match(r'^[\w\-\.]+$', model_name):
+        if not re.fullmatch(r'[\w.\-]+', model_name):
             raise ValueError(f"Invalid model name format: {model_name}")
+        if self.provider == "codex_cli":
+            return self._call_codex(prompt_text, image_base64, model_name, expect_json)
 
         os.makedirs(self._cli_tmp_dir, exist_ok=True)
         workspace_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

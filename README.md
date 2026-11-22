@@ -1,5 +1,13 @@
 # GameCLI Agent
 
+## 日本語の初見ゲーム実況
+
+このフォークでは、ダッシュボードの初期設定を「Codex CLI (ChatGPT login)」と「初見実況」にしています。Codex CLI で `codex login` を実行して ChatGPT でサインインし、`codex login status` で確認してください。プレイ中の画面を画像として Codex に送信し、契約の利用枠を使います。
+
+Windows で下記の依存関係を用意して `run.bat` を起動し、[ダッシュボード](http://localhost:5173) を開きます。Target Type で Window、Target Name でゲームのウィンドウを選びます。Game Instructions に今回の目的と操作説明を入れて Start を押してください。モデルは「Codex CLI default」のまま使えます。
+
+初見実況の仮の性格は「慎重だが未知のアイテムに弱い」です。その回の観察をもとに一手と日本語の台詞を生成し、時刻付きの結果を `backend/Narration/` に保存します。この段階で生成する実況はテキストです。
+
 An autonomous AI agent that plays turn-based games by watching your screen and controlling your mouse and keyboard. It uses large language models (LLMs) with vision capabilities to analyze game screenshots, make strategic decisions, and execute actions — all in real time.
 
 > **Windows only** — relies on Windows APIs for input simulation (`pydirectinput`, `ctypes` SendInput).
@@ -41,8 +49,9 @@ backend/           Python (FastAPI + asyncio)
 - **Node.js 18+**
 - **Tesseract OCR** — [download installer](https://github.com/UB-Mannheim/tesseract/wiki). Install to the default path (`C:\Program Files\Tesseract-OCR\`)
 - **One of the following LLM providers:**
+  - [Codex CLI](https://developers.openai.com/codex/cli/) with ChatGPT sign-in (dashboard default).
   - Anthropic API — fastest option (one direct call per step, default `claude-haiku-5-5`); set `ANTHROPIC_API_KEY`, run `ant auth login`, or paste a key in the dashboard
-  - [Claude Code CLI](https://claude.ai/code) installed and authenticated (free with your Claude plan; `irm https://claude.ai/install.ps1 | iex` on Windows) — **default**, uses Haiku
+  - [Claude Code CLI](https://claude.ai/code) installed and authenticated with your Claude plan
   - [Antigravity CLI](https://antigravity.google/) (`agy`) installed and authenticated (free)
   - [Gemini CLI](https://github.com/google-gemini/gemini-cli) installed and authenticated (free)
   - Gemini API key from [Google AI Studio](https://aistudio.google.com/)
@@ -52,7 +61,7 @@ backend/           Python (FastAPI + asyncio)
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/BjornBrorsson/GameCLI-Agent.git
+   git clone https://github.com/ueyamaryuto412-blip/GameCLI-Agent.git
    cd GameCLI-Agent
    ```
 

@@ -1,17 +1,8 @@
 @echo off
-echo =======================================================
-echo    Starting Gemini Computer Use Agent...
-echo =======================================================
+setlocal
+if exist "%~dp0.venv\Scripts\python.exe" set "PATH=%~dp0.venv\Scripts;%PATH%"
+where codex >nul 2>nul || for /f "delims=" %%D in ('powershell.exe -NoProfile -Command "(Get-AppxPackage OpenAI.Codex).InstallLocation"') do set "PATH=%%D\app\resources;%PATH%"
 
-echo [1/2] Starting FastAPI Backend on port 8000...
-start "Gemini Agent - Backend" cmd /k "cd /d c:\Coding Projects\GameCLI-Agent\backend & pip install -r requirements.txt & python -m uvicorn main:app --host 127.0.0.1 --port 8000"
-
-echo [2/2] Starting React Frontend on port 5173...
-start "Gemini Agent - Frontend" cmd /k "cd /d c:\Coding Projects\GameCLI-Agent\frontend & npm install & npm run dev"
-
-echo.
-echo Both services are starting up in separate windows!
-echo Once they are ready, you can access the UI at:
-echo http://localhost:5173
-echo.
-pause
+start "GameCLI Backend" /D "%~dp0backend" cmd /k "python -m pip install -r requirements.txt && python -m uvicorn main:app --host 127.0.0.1 --port 8000"
+start "GameCLI Frontend" /D "%~dp0frontend" cmd /k "npm.cmd ci --no-audit --no-fund && npm.cmd run dev"
+echo Dashboard: http://localhost:5173

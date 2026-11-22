@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import './index.css';
 
 const PROVIDERS = [
+  { id: 'codex_cli', label: 'Codex CLI (ChatGPT login)', needsKey: false },
   { id: 'anthropic_api', label: 'Anthropic API (fast)', needsKey: false, optionalKey: true },
   { id: 'claude_code_cli', label: 'Claude Code CLI (Free)', needsKey: false },
   { id: 'antigravity_cli', label: 'Antigravity CLI (Free)', needsKey: false },
@@ -11,6 +12,7 @@ const PROVIDERS = [
 ];
 
 const ROLES = [
+  { id: 'first_play', label: '初見実況', desc: '慎重だけど好奇心旺盛な日本語の実況者' },
   { id: 'gamer', label: 'Gamer', desc: 'Play to win with smart strategy' },
   { id: 'reviewer', label: 'Reviewer', desc: 'Evaluate game design, UX, and mechanics' },
   { id: 'tester', label: 'QA Tester', desc: 'Hunt for bugs, glitches, and edge cases' },
@@ -18,10 +20,10 @@ const ROLES = [
 ];
 
 function App() {
-  const [provider, setProvider] = useState('claude_code_cli');
+  const [provider, setProvider] = useState('codex_cli');
   const [apiKey, setApiKey] = useState('');
   const [secondaryApiKey, setSecondaryApiKey] = useState('');
-  const [selectedModel, setSelectedModel] = useState('haiku');
+  const [selectedModel, setSelectedModel] = useState('');
   const [customModel, setCustomModel] = useState('');
   const [availableModels, setAvailableModels] = useState([]);  // [{id, name}]
   const [modelsLoading, setModelsLoading] = useState(false);
@@ -30,7 +32,7 @@ function App() {
   const [targetType, setTargetType] = useState('monitor');
   const [targetName, setTargetName] = useState('Monitor 1');
   const [instructions, setInstructions] = useState('');
-  const [role, setRole] = useState('gamer');
+  const [role, setRole] = useState('first_play');
   const [useGrounding, setUseGrounding] = useState(false);
   const [groundingModel, setGroundingModel] = useState('');
   const [captureMode, setCaptureMode] = useState('auto');
@@ -90,18 +92,25 @@ function App() {
     const info = PROVIDERS.find(p => p.id === provider);
     if (info?.needsKey && !apiKey) {
       setAvailableModels([]);
+      setSelectedModel('');
+      setModelsLoading(false);
       setModelsError('');
       return;
     }
-    const timer = setTimeout(() => fetchModels(provider, apiKey), info?.needsKey ? 600 : 0);
-    return () => clearTimeout(timer);
+    const controller = new AbortController();
+    const timer = setTimeout(() => fetchModels(provider, apiKey, controller.signal), info?.needsKey ? 600 : 0);
+    return () => {
+      controller.abort();
+      clearTimeout(timer);
+    };
   }, [provider, apiKey]);
 
-  const fetchModels = async (prov, key) => {
+  const fetchModels = async (prov, key, signal) => {
     setModelsLoading(true);
     setModelsError('');
     try {
       const res = await fetch('http://localhost:8000/api/models', {
+        signal,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ provider: prov, api_key: key || '' })
@@ -111,6 +120,7 @@ function App() {
         throw new Error(err.error || `HTTP ${res.status}`);
       }
       const data = await res.json();
+      if (signal.aborted) return;
       const models = data.models || [];
       setAvailableModels(models);
       if (data.default && models.some(m => m.id === data.default)) {
@@ -120,11 +130,13 @@ function App() {
       }
       setCustomModel('');
     } catch (e) {
+      if (signal.aborted) return;
       console.error('Failed to fetch models', e);
+      setSelectedModel('');
       setModelsError(e.message);
       setAvailableModels([]);
     } finally {
-      setModelsLoading(false);
+      if (!signal.aborted) setModelsLoading(false);
     }
   };
 
@@ -679,6 +691,7 @@ function App() {
               <label>AI Provider</label>
               <select value={provider} onChange={e => {
                 setProvider(e.target.value);
+                setSelectedModel('');
                 setCustomModel('');
               }}>
                 {PROVIDERS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
@@ -732,11 +745,11 @@ function App() {
                 disabled={modelsLoading || availableModels.length === 0}
               >
                 {availableModels.length === 0 && !modelsLoading && (
-                  <option value="">— enter API key to load models —</option>
+                  <option value="">{providerInfo?.needsKey ? 'Enter API key to load models' : 'No models available'}</option>
                 )}
                 {availableModels.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
-              {(providerInfo?.needsKey || provider === 'anthropic_api' || provider === 'claude_code_cli' || provider === 'antigravity_cli') && (
+              {(providerInfo?.needsKey || provider === 'codex_cli' || provider === 'anthropic_api' || provider === 'claude_code_cli' || provider === 'antigravity_cli') && (
                 <>
                   <label>Or enter custom model ID</label>
                   <input
@@ -745,6 +758,7 @@ function App() {
                     onChange={e => setCustomModel(e.target.value)}
                     placeholder={
                       provider === 'openrouter' ? 'e.g. meta-llama/llama-4-maverick'
+                      : provider === 'codex_cli' ? 'Optional Codex model ID'
                       : provider === 'claude_code_cli' ? 'e.g. claude-haiku-4-5-20251001'
                       : provider === 'antigravity_cli' ? 'e.g. gemini-3.8-flash-low'
                       : 'e.g. gemini-2.5-flash'}

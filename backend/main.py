@@ -326,6 +326,11 @@ def get_models(req: ModelsRequest):
             "default": "gemini-2.5-flash",
         }
 
+    if req.provider == "codex_cli":
+        if not find_cli_binary("codex"):
+            return JSONResponse(status_code=400, content={"error": "Codex CLI not found on PATH."})
+        return {"models": [{"id": "default", "name": "Codex CLI default"}], "default": "default"}
+
     if req.provider == "claude_code_cli":
         if not find_cli_binary("claude"):
             return JSONResponse(status_code=400, content={

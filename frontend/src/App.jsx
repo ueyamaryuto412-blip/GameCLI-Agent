@@ -12,7 +12,7 @@ const PROVIDERS = [
 ];
 
 const ROLES = [
-  { id: 'first_play', label: '初見実況', desc: '慎重だけど好奇心旺盛な日本語の実況者' },
+  { id: 'first_play', label: '初見実況', desc: '買い物好きで、心配になると暗算を始める実況者' },
   { id: 'gamer', label: 'Gamer', desc: 'Play to win with smart strategy' },
   { id: 'reviewer', label: 'Reviewer', desc: 'Evaluate game design, UX, and mechanics' },
   { id: 'tester', label: 'QA Tester', desc: 'Hunt for bugs, glitches, and edge cases' },

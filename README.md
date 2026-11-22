@@ -6,24 +6,37 @@
 
 Windows で下記の依存関係を用意して `run.bat` を起動し、[ダッシュボード](http://localhost:5173) を開きます。Target Type で Window、Target Name でゲームのウィンドウを選びます。Game Instructions に今回の目的と操作説明を入れて Start を押してください。モデルは「Codex CLI default」のまま使えます。
 
-初見実況の仮の性格は「慎重だが未知のアイテムに弱い」です。その回の観察をもとに一手と日本語の台詞を生成し、時刻付きの結果を `backend/Narration/` に保存します。この段階で生成する実況はテキストです。
+ダッシュボードの初見実況では、その回の観察をもとに一手と日本語の台詞を生成し、時刻付きの結果を `backend/Narration/` に保存します。音声付きの動画を作るには、以下の収録コマンドを使います。
 
 ### Slay the Spire 2 のローカル収録
 
-Windows の日本語デスクトップ音声を用意し、STS2 のソロのランを開きます。
+収録時の声は「VOICEVOX:ずんだもん」のノーマルです。初回はセットアップで音声モデル、辞書、CPU用ランタイムを取得します。STS2 のソロのランを開きます。
 リポジトリ直下で次を実行すると、現在のゲーム画面を読み、日本語で実況して操作します。
 試作は6分で打ち切り、ゲームは開いたままにします。進行はゲーム側で自動保存されます。
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+.\backend\setup_zundamon.ps1
 Set-Location backend
 ..\.venv\Scripts\python.exe sts2_pilot.py --minutes 6
 ```
 
 `--observe` を付けると、今見えている場面の実況と録音・録画だけを試せます。
 収録結果は `recordings/sts2-日時/pilot.mp4` です。STS2のウィンドウとゲーム音に
-Windowsの日本語音声を重ね、次の判断を待つ区間をカットします。元映像と台詞・時刻も
+ずんだもんの声と字幕を重ね、次の判断を待つ区間をカットします。末尾に音声クレジットを表示します。Windowsの日本語デスクトップ音声を使う場合は `--voice windows` を指定します。元映像と台詞・時刻も
 同じフォルダーに残ります。YouTubeに公開する前に、このMP4を人間がレビューできます。
+
+### 収録済みの映像から台詞を編集する
+
+STS2の実況者は「買い物好きで、心配になると暗算を始める」性格です。店に行きたい理由、被弾の予想、決着後の財布といった、その回を通して追える話を組み立てます。プレイ中の人物設定は `Game Instructions.slaythespire2.md`、スライム戦の編集台本は `episodes/slime-shop.json` にあります。
+
+リポジトリ直下で次を実行すると、ゲームを起動せずに再編集できます。台本の `start` と `end` は元映像の秒数、`text` は台詞と字幕です。空の台詞はゲーム音だけのカットです。必要に応じて `offset` で発声を遅らせ、`reading` で読みを指定できます。
+
+```powershell
+.\.venv\Scripts\python.exe backend/sts2_pilot.py --edit recordings/sts2-20261122-210231-498855 --script episodes/slime-shop.json
+```
+
+ずんだもん音声の公開条件は[音源利用ガイドライン](https://zunko.jp/con_ongen_kiyaku.html)に従います。
 
 An autonomous AI agent that plays turn-based games by watching your screen and controlling your mouse and keyboard. It uses large language models (LLMs) with vision capabilities to analyze game screenshots, make strategic decisions, and execute actions — all in real time.
 

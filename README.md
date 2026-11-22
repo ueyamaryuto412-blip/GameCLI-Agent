@@ -30,11 +30,19 @@ Set-Location backend
 
 カード報酬だけを収録するなど目的を変えたいときは `--objective "カード報酬を選んで、結果を確認したら終了"` を渡してください。候補自体はゲームを見てから選びます。店への寄り道、カード選び、ピンチでの守り方に関する好みは `Game Instructions.slaythespire2.md` で編集できます。
 
+第一回「タダの一枚、何回使える？」の進行台本は `episodes/01-ikari.md` です。「怒り」を取った直後のランから始めます。挨拶、道中の目的、確かめたいこと、締めをプレイヤーに渡し、一戦の手順と結末はその場で決めます。
+
+```powershell
+# backend フォルダーから実行
+..\.venv\Scripts\python.exe sts2_pilot.py --minutes 24 --episode ../episodes/01-ikari.md
+```
+
 ### 収録済みの映像から台詞を編集する
 
 STS2の実況者は「買い物好きで、心配になると暗算を始める」性格です。店に行きたい理由、被弾の予想、決着後の財布といった、その回を通して追える話を組み立てます。プレイ中の人物設定は `Game Instructions.slaythespire2.md`、スライム戦の編集台本は `episodes/slime-shop.json` にあります。
 
 リポジトリ直下で次を実行すると、ゲームを起動せずに再編集できます。台本の `start` と `end` は元映像の秒数、`text` は台詞と字幕です。空の台詞はゲーム音だけのカットです。必要に応じて `offset` で発声を遅らせ、`reading` で読みを指定できます。
+ライブ収録を切り直す場合は、カットに `spoken_file`（例 `spoken/000.wav`）を指定すると、その場でしゃべった音声を使えます。先頭のカットの `title` は冒頭に表示されます。
 
 ```powershell
 .\.venv\Scripts\python.exe backend/sts2_pilot.py --edit recordings/sts2-20261122-210231-498855 --script episodes/slime-shop.json

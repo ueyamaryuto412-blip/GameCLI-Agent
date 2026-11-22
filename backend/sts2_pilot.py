@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import textwrap
 import time
@@ -63,7 +64,11 @@ def ass_time(seconds):
     return f"{cs // 360000}:{cs // 6000 % 60:02}:{cs // 100 % 60:02}.{cs % 100:02}"
 
 
-def subtitles(path, text, offset, voice_seconds, length, credit):
+def ass_literal(text):
+    return text.replace("{", "｛").replace("}", "｝").replace(chr(92), "＼")
+
+
+def subtitles(path, text, offset, voice_seconds, length, credit, title=""):
     header = """[Script Info]
 ScriptType: v4.00+
 PlayResX: 1280
@@ -74,34 +79,38 @@ ScaledBorderAndShadow: yes
 Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
 Style: Voice,Yu Gothic,38,&H00EDFFF3,&H000000FF,&H00233618,&H90000000,-1,0,0,0,100,100,0,0,1,3,1,8,28,28,66,1
 Style: Credit,Yu Gothic,23,&H00FFFFFF,&H000000FF,&H00202020,&H80000000,-1,0,0,0,100,100,0,0,1,2,0,3,24,24,20,1
+Style: Title,Yu Gothic,29,&H00FAFFF4,&H000000FF,&H552A2814,&H552A2814,-1,0,0,0,100,100,0,0,3,9,0,1,38,38,36,1
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 """
     # Treat generated narration as literal subtitle text, including braces.
-    plain = text.replace("{", "｛").replace("}", "｝").replace(chr(92), "＼")
+    plain = ass_literal(text)
     rows = [line for paragraph in plain.splitlines() for line in textwrap.wrap(paragraph, 28)]
     body = r"\N".join(rows)
     end = ass_time(min(length, offset + voice_seconds + .15))
     events = f"Dialogue: 0,{ass_time(offset)},{end},Voice,,0,0,0,,{body}\n"
+    if title:
+        events += f"Dialogue: 1,0:00:00.00,{ass_time(min(5, length))},Title,,0,0,0,,{ass_literal(title)}\n"
     if credit:
         events += f"Dialogue: 1,0:00:00.00,{ass_time(length)},Credit,,0,0,0,,{credit}\n"
     path.write_text(header + events, encoding="utf-8-sig")
 
 
-def render(folder, lines, duration, speaker, output_name="pilot.mp4"):
+def render(folder, lines, duration, speaker, output_name="pilot.mp4", title=""):
     folder = Path(folder).resolve()
     with tempfile.TemporaryDirectory(prefix="mix-", dir=folder) as work:
         mix = Path(work)
-        render_parts(folder / "game.mkv", mix, lines, duration, speaker)
+        render_parts(folder / "game.mkv", mix, lines, duration, speaker, title)
         (mix / "pilot.mp4").replace(folder / output_name)
     print(folder / output_name, flush=True)
 
 
-def render_parts(source, folder, lines, duration, speaker):
+def render_parts(source, folder, lines, duration, speaker, title=""):
     parts = []
+    last_spoken = next((i for i in reversed(range(len(lines))) if lines[i]["text"].strip()), len(lines) - 1)
     for index, line in enumerate(lines):
         wav = folder / f"voice-{index:03}.wav"
-        if "spoken_file" in line and "start" not in line:
+        if "spoken_file" in line:
             wav = source.parent / line["spoken_file"]
             with wave.open(str(wav)) as recorded:
                 voice_seconds = recorded.getnframes() / recorded.getframerate()
@@ -126,8 +135,9 @@ def render_parts(source, folder, lines, duration, speaker):
         part = f"cut-{index:03}.mp4"
         final_length = max(length, offset + voice_seconds + .2)
         sub = folder / f"sub-{index:03}.ass"
-        credit = speaker.credit if isinstance(speaker, Zundamon) and index == len(lines) - 1 else ""
-        subtitles(sub, line["text"], offset, voice_seconds, final_length, credit)
+        credit = speaker.credit if isinstance(speaker, Zundamon) and index >= last_spoken else ""
+        opening_title = (title or line.get("title", "")) if not parts else ""
+        subtitles(sub, line["text"], offset, voice_seconds, final_length, credit, opening_title)
         filters = ("[0:v]scale=1280:720:force_original_aspect_ratio=decrease,"
                    "pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=24,"
                    f"tpad=stop_mode=clone:stop_duration={final_length:.3f},ass={sub.name}[v];"
@@ -150,7 +160,7 @@ def render_parts(source, folder, lines, duration, speaker):
                    cwd=folder, check=True)
 
 
-async def record(minutes, observe, speaker, objective=None):
+async def record(minutes, observe, speaker, objective=None, title=""):
     window = next((w for w in ck.list_windows() if w.title == TITLE
                    and w.process_name.lower() == "slaythespire2.exe"), None)
     if window is None:
@@ -217,24 +227,35 @@ async def record(minutes, observe, speaker, objective=None):
         result = recorder.stop()
         if result.error:
             raise RuntimeError(f"Game capture failed: {result.error}")
-    render(folder, lines, duration, speaker)
+    render(folder, lines, duration, speaker, title=title)
 
 
 if __name__ == "__main__":
+    # The Windows redirected-console default (CP932) cannot print all game logs.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--minutes", type=float, default=6)
     parser.add_argument("--observe", action="store_true", help="Narrate the current scene without input.")
     parser.add_argument("--voice", choices=["zundamon", "windows"], default="zundamon")
     parser.add_argument("--edit", type=Path, metavar="RECORDING", help="Re-edit an existing recording offline.")
     parser.add_argument("--script", type=Path, help="JSON list of timed commentary cues for --edit.")
-    parser.add_argument("--objective", help="Episode objective for the live player; keeps the character's preferences.")
+    story = parser.add_mutually_exclusive_group()
+    story.add_argument("--objective", help="Episode objective for the live player; keeps the character's preferences.")
+    story.add_argument("--episode", type=Path, help="Live episode outline in Markdown with a title on the first line.")
     args = parser.parse_args()
     if not 0 < args.minutes < float("inf"):
         parser.error("--minutes must be a positive finite number")
     if bool(args.edit) != bool(args.script) or (args.edit and args.observe):
         parser.error("Use --edit RECORDING with --script FILE, or use --observe for a live preview.")
-    if args.objective and (args.edit or args.observe):
-        parser.error("--objective applies to a play session.")
+    if (args.objective or args.episode) and (args.edit or args.observe):
+        parser.error("--objective and --episode apply to play sessions.")
+    title = ""
+    if args.episode:
+        args.objective = args.episode.read_text(encoding="utf-8-sig").strip()
+        if not args.objective.startswith("# "):
+            parser.error("The episode outline must begin with a Markdown title (# Title).")
+        title = args.objective.splitlines()[0][2:].strip()
     speaker = Zundamon() if args.voice == "zundamon" else japanese_voice()
     if args.edit:
         script = json.loads(args.script.read_text(encoding="utf-8-sig"))
@@ -242,4 +263,4 @@ if __name__ == "__main__":
             parser.error("Each script cue needs start, end and text.")
         render(args.edit, script, script[-1]["end"], speaker, f"{args.script.stem}-{args.voice}.mp4")
     else:
-        asyncio.run(record(args.minutes, args.observe, speaker, args.objective))
+        asyncio.run(record(args.minutes, args.observe, speaker, args.objective, title))

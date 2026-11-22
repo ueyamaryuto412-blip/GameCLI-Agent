@@ -570,7 +570,11 @@ class AgentLoop:
                 if check_text:
                     await _console_log(f"  [check] {'progress' if progress else 'no progress' if progress is False else '?'}: {check_text[:300]}")
                     await emit_log(f"CHECK: {check_text}")
-                await emit_log(f"NARRATION: {narration}")
+                if role == "first_play":
+                    await emit_log({"type": "narration", "message": narration,
+                                    "step": step, "planned_actions": raw_actions})
+                else:
+                    await emit_log(f"NARRATION: {narration}")
                 for (cmd, reason, *_), expect in zip(parsed_actions, expects):
                     label = f"{cmd}" + (f"  —  {reason}" if reason else "")
                     await emit_log(f"ACTION: {label}")

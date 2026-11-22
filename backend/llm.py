@@ -83,6 +83,9 @@ ROLE_PROMPTS = {
         "今回の画面、渡された操作説明、今回のプレイで観察した出来事を頼りに選択する。"
         "未確認の攻略知識や先の展開を持ち込まず、予想と実際の結果を区別する。"
         "ゲーム別の人物設定を優先する。narrationには視聴者に聞かせたい短い日本語の台詞を入れる。"
+        "選択肢があるときは、目的を達成できる手の中でキャラの好みが実際のactionsを決める。"
+        "actionsのreasonには選んだ対象と決め手を残す。競合する候補が見えていて迷った時だけ、"
+        "そちらを見送った理由も短く残す。台詞とコマンドは同じ判断から作る。"
         "定型的な操作報告や直前の言い直しは省く。絵と音だけで十分な手ではnarrationを空文字にできる。"
         "操作コマンド名とJSONキーは指定の英語のまま返す。"
     ),
@@ -360,7 +363,7 @@ FORMAT:
   "notes_add": ["Short new fact learned this step"],
   "actor_now": "",
   "findings": [{"type": "ux", "severity": "low", "title": "Short title", "details": "What happened", "confirmed": false}],
-  "narration": "What game this is, what you see, and what you plan to do (2-5 sentences).",
+  "narration": "{narration_format}",
   "actions": [
     {"command": "press enter", "reason": "Confirm selection", "expect": "Dialog closes"},
     {"command": "click 750 400", "reason": "Click the target element", "expect": "Element turns highlighted"}
@@ -1076,12 +1079,13 @@ class LLMIntegration:
             # The CLI spawns a subprocess per call, so merging Lead+Worker
             # into one call saves ~50% of the per-step latency.
             # One combined call per step for every provider unless the
-            # two-call Lead/Worker split is switched on (GCA-013).
-            if not self.two_call or self.provider in CLI_PROVIDERS or self.provider == ANTHROPIC_PROVIDER:
+            # two-call Lead/Worker split is switched on (GCA-013). First-play
+            # narration and input must come from the same decision.
+            if role == "first_play" or not self.two_call or self.provider in CLI_PROVIDERS or self.provider == ANTHROPIC_PROVIDER:
                 return self._get_next_action_combined(
                     image_base64, game_instructions, model_name, role_instructions,
                     grounding_text, extra_commands, step_history, memories_text,
-                    last_step, size_line, goals_text, stuck_text, view_note)
+                    last_step, size_line, goals_text, stuck_text, view_note, role=role)
 
             # ── API path: two-call Lead+Worker (richer reasoning) ──
             # Phase 1: Lead Agent dictates strategy
@@ -1153,7 +1157,8 @@ class LLMIntegration:
                                    grounding_text: str, extra_commands: str,
                                    step_history: str, memories_text: str,
                                    last_step: str = "", size_line: str = "",
-                                   goals_text: str = "", stuck_text: str = "", view_note: str = ""):
+                                   goals_text: str = "", stuck_text: str = "", view_note: str = "",
+                                   role: str = DEFAULT_ROLE):
         """Single-call path (CLI providers and the Anthropic API): check the
         previous step, plan and generate commands in one model call.
 
@@ -1162,6 +1167,10 @@ class LLMIntegration:
         Anthropic API can cache it — and a dynamic part for this step."""
 
         prompt_template = COMBINED_AGENT_PROMPT.replace("{role_instructions}", role_instructions)
+        narration_format = ("今の選択や発見を日本語で一息。画面で分かる案内や作品名の読み上げは省く。無言も可。"
+                            if role == "first_play" else
+                            "What game this is, what you see, and what you plan to do (2-5 sentences).")
+        prompt_template = prompt_template.replace("{narration_format}", narration_format)
         static = (
             f"SYSTEM INSTRUCTIONS:\n{prompt_template}\n\n"
             f"Game Instructions:\n{game_instructions}\n\n"

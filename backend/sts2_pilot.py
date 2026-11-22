@@ -9,6 +9,7 @@ import tempfile
 import textwrap
 import time
 import wave
+import winsound
 
 import capturekit as ck
 import imageio_ffmpeg
@@ -100,8 +101,13 @@ def render_parts(source, folder, lines, duration, speaker):
     parts = []
     for index, line in enumerate(lines):
         wav = folder / f"voice-{index:03}.wav"
-        voice_seconds = write_voice(speaker, line.get("reading", line["text"]).replace("\n", ""),
-                                    wav, line.get("speed", 1.1))
+        if "spoken_file" in line and "start" not in line:
+            wav = source.parent / line["spoken_file"]
+            with wave.open(str(wav)) as recorded:
+                voice_seconds = recorded.getnframes() / recorded.getframerate()
+        else:
+            voice_seconds = write_voice(speaker, line.get("reading", line["text"]).replace("\n", ""),
+                                        wav, line.get("speed", 1.1))
         offset = line.get("offset", 0.3)
         if "start" in line:
             start = line["start"]
@@ -110,6 +116,7 @@ def render_parts(source, folder, lines, duration, speaker):
                 raise ValueError(f"Cue {index + 1} needs {offset + voice_seconds:.2f}s in {length:.2f}s")
         else:
             start = max(0, line["at"] - 0.4)
+            offset = line["at"] - start
             boundary = lines[index + 1]["at"] - 0.4 if index + 1 < len(lines) else duration
             wanted = max(voice_seconds + 1.0, line["last_action"] - start + 2.0)
             length = min(min(duration, boundary) - start, wanted)
@@ -128,7 +135,7 @@ def render_parts(source, folder, lines, duration, speaker):
                    f"[1:a]adelay={round(offset * 1000)}:all=1,apad[voice];"
                    "[game][voice]amix=inputs=2:normalize=0,alimiter=limit=0.95[a]")
         subprocess.run([FFMPEG, "-loglevel", "error", "-y", "-ss", str(start),
-                        "-t", str(length), "-i", str(source), "-i", wav.name,
+                        "-t", str(length), "-i", str(source), "-i", str(wav),
                         "-filter_complex", filters, "-map", "[v]", "-map", "[a]",
                         "-t", str(final_length), "-c:v", "libx264",
                         "-preset", "veryfast", "-pix_fmt", "yuv420p", "-c:a", "aac",
@@ -143,14 +150,19 @@ def render_parts(source, folder, lines, duration, speaker):
                    cwd=folder, check=True)
 
 
-async def record(minutes, observe, speaker):
+async def record(minutes, observe, speaker, objective=None):
     window = next((w for w in ck.list_windows() if w.title == TITLE
                    and w.process_name.lower() == "slaythespire2.exe"), None)
     if window is None:
         raise RuntimeError(f"Open {TITLE} first.")
     instructions = (ROOT / "Game Instructions.slaythespire2.md").read_text(encoding="utf-8")
+    if objective:
+        persona, heading, _ = instructions.partition("## 今回の目的")
+        instructions = f"{persona}{heading}\n\n{objective}"
     folder = ROOT / "recordings" / datetime.now().strftime("sts2-%Y%m%d-%H%M%S-%f")
     folder.mkdir(parents=True)
+    (folder / "spoken").mkdir()
+    (folder / "instructions.md").write_text(instructions, encoding="utf-8")
     recorder = ck.Recorder(
         ck.WindowSource(window, include_cursor=True), [ck.ProcessAudioSource.for_window(window)],
         str(folder / "game.mkv"), ck.RecordingConfig(fps=24, encoder=ck.EncoderConfig(
@@ -159,10 +171,25 @@ async def record(minutes, observe, speaker):
 
     async def event(message):
         now = time.monotonic() - started
-        if isinstance(message, str) and message.startswith("NARRATION: "):
-            lines.append({"at": now, "last_action": now, "text": message.removeprefix("NARRATION: ").strip()})
+        if isinstance(message, dict) and message.get("type") == "narration":
+            text = message["message"].strip()
+            filename = f"spoken/{len(lines):03}.wav"
+            path = folder / filename
+            write_voice(speaker, text, path)
+            line = {"decided_at": now, "at": time.monotonic() - started, "text": text,
+                    "spoken_file": filename, "planned_actions": message.get("planned_actions", []),
+                    "inputs": []}
+            line["last_action"] = line["at"]
+            lines.append(line)
+            if text:
+                await asyncio.to_thread(winsound.PlaySound, str(path),
+                                        winsound.SND_FILENAME | winsound.SND_NODEFAULT)
+            line["speech_finished_at"] = time.monotonic() - started
         elif isinstance(message, dict) and message.get("type") == "executing" and lines:
             lines[-1]["last_action"] = now
+            lines[-1]["inputs"].append({"at": now, "command": message["command"]})
+        elif isinstance(message, str) and message.startswith("CHECK: ") and lines:
+            lines[-1]["next_observation"] = message.removeprefix("CHECK: ")
         print(message, flush=True)
         if lines:
             (folder / "narration.json").write_text(json.dumps(lines, ensure_ascii=False, indent=2),
@@ -178,7 +205,7 @@ async def record(minutes, observe, speaker):
                       "過去形で語らないでください。台詞だけを返してください。")
             text = LLMIntegration("codex_cli")._call(prompt, ScreenCapture.pil_to_base64(frame),
                                                      "default", expect_json=False)
-            await event("NARRATION: " + text)
+            await event({"type": "narration", "message": text})
             await asyncio.sleep(8)
         else:
             agent = AgentLoop()
@@ -200,11 +227,14 @@ if __name__ == "__main__":
     parser.add_argument("--voice", choices=["zundamon", "windows"], default="zundamon")
     parser.add_argument("--edit", type=Path, metavar="RECORDING", help="Re-edit an existing recording offline.")
     parser.add_argument("--script", type=Path, help="JSON list of timed commentary cues for --edit.")
+    parser.add_argument("--objective", help="Episode objective for the live player; keeps the character's preferences.")
     args = parser.parse_args()
     if not 0 < args.minutes < float("inf"):
         parser.error("--minutes must be a positive finite number")
     if bool(args.edit) != bool(args.script) or (args.edit and args.observe):
         parser.error("Use --edit RECORDING with --script FILE, or use --observe for a live preview.")
+    if args.objective and (args.edit or args.observe):
+        parser.error("--objective applies to a play session.")
     speaker = Zundamon() if args.voice == "zundamon" else japanese_voice()
     if args.edit:
         script = json.loads(args.script.read_text(encoding="utf-8-sig"))
@@ -212,4 +242,4 @@ if __name__ == "__main__":
             parser.error("Each script cue needs start, end and text.")
         render(args.edit, script, script[-1]["end"], speaker, f"{args.script.stem}-{args.voice}.mp4")
     else:
-        asyncio.run(record(args.minutes, args.observe, speaker))
+        asyncio.run(record(args.minutes, args.observe, speaker, args.objective))

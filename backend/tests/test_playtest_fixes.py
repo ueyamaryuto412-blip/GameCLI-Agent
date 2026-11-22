@@ -189,6 +189,23 @@ def test_anthropic_step_request_shape_and_cost():
     assert abs(llm.cost.total_cost_usd - expected) < 1e-12
 
 
+def test_first_play_decides_speech_and_action_together(monkeypatch):
+    player = llm_mod.LLMIntegration("openrouter")
+    player.two_call = True
+    prompts = []
+    reply = {"narration": "あの店に寄ろう。", "actions": [{"command": "click 20 40"}]}
+
+    def answer(prompt, image, model, **kwargs):
+        prompts.append(prompt)
+        assert kwargs["schema"] == llm_mod.STEP_SCHEMA
+        return reply
+
+    monkeypatch.setattr(player, "_call_api", answer)
+    assert player.get_next_action("frame", "店を優先する", role="first_play") == reply
+    assert len(prompts) == 1 and "店を優先する" in prompts[0]
+    assert "{narration_format}" not in prompts[0]
+
+
 def test_anthropic_static_prompt_is_stable_between_steps():
     reply = {"last_step_check": "", "progress": False, "narration": "", "actions": []}
     llm = _anthropic_llm(reply)

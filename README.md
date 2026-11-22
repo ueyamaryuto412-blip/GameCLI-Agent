@@ -8,6 +8,23 @@ Windows で下記の依存関係を用意して `run.bat` を起動し、[ダッ
 
 初見実況の仮の性格は「慎重だが未知のアイテムに弱い」です。その回の観察をもとに一手と日本語の台詞を生成し、時刻付きの結果を `backend/Narration/` に保存します。この段階で生成する実況はテキストです。
 
+### Slay the Spire 2 のローカル収録
+
+Windows の日本語デスクトップ音声を用意し、STS2 のソロのランを開きます。
+リポジトリ直下で次を実行すると、現在のゲーム画面を読み、日本語で実況して操作します。
+試作は6分で打ち切り、ゲームは開いたままにします。進行はゲーム側で自動保存されます。
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+Set-Location backend
+..\.venv\Scripts\python.exe sts2_pilot.py --minutes 6
+```
+
+`--observe` を付けると、今見えている場面の実況と録音・録画だけを試せます。
+収録結果は `recordings/sts2-日時/pilot.mp4` です。STS2のウィンドウとゲーム音に
+Windowsの日本語音声を重ね、次の判断を待つ区間をカットします。元映像と台詞・時刻も
+同じフォルダーに残ります。YouTubeに公開する前に、このMP4を人間がレビューできます。
+
 An autonomous AI agent that plays turn-based games by watching your screen and controlling your mouse and keyboard. It uses large language models (LLMs) with vision capabilities to analyze game screenshots, make strategic decisions, and execute actions — all in real time.
 
 > **Windows only** — relies on Windows APIs for input simulation (`pydirectinput`, `ctypes` SendInput).

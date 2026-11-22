@@ -13,3 +13,5 @@ requests
 mcp
 pynput
 anthropic>=2.3
+capturekit[ffmpeg]==0.1.0
+pywin32

@@ -52,7 +52,7 @@ class WindowRecorder:
                         raise TimeoutError(f"Game window did not open: {game.window}")
                     time.sleep(1)
         rows, _, reason = asyncio.run(capture_session(
-            folder, game.window, game.process, player.instructions(episode), voice.write,
+            folder, game.window, game.process, player.instructions(episode), voice.write if voice else None,
             player=player, minutes=minutes, standalone=True, scene_speech=self.scene_speech))
         if not rows or not reason.startswith(("STATUS: All goals", "STATUS: Time limit")):
             raise RuntimeError(f"Recording stopped before the requested endpoint: {reason or 'interrupted'}")
@@ -168,16 +168,7 @@ class SceneEdit(ContinuousEdit):
             return start, end
         return None
 
-    def prepare_speech(self, rows, work, voice):
-        import wave
-        from scene_narration import BREATH, sentences
-        rows = [dict(row) for row in rows]
-        candidates = []
-        for index, row in enumerate(rows):
-            original = row.get("original_text", "")
-            if original and original != row["text"] and len(sentences(original)) > 1:
-                candidates.append({"id": index, "sentences": sentences(original),
-                                   "available_seconds": round(min(8.5, row["decided_at"] - row["thinking_at"] - .95), 1)})
+    def choose_sentences(self, candidates):
         chooser = LLMIntegration("codex_cli", reasoning_effort="low")
         choices = {}
         for i in range(0, len(candidates), 24):
@@ -198,6 +189,19 @@ class SceneEdit(ContinuousEdit):
                 index, number = item.get("id"), item.get("sentence")
                 if type(index) is int and index in allowed and type(number) is int and 0 <= number < len(allowed[index]):
                     choices[index] = allowed[index][number]
+        return choices
+
+    def prepare_speech(self, rows, work, voice):
+        import wave
+        from scene_narration import BREATH, sentences
+        rows = [dict(row) for row in rows]
+        candidates = []
+        for index, row in enumerate(rows):
+            original = row.get("original_text", "")
+            if original and original != row["text"] and len(sentences(original)) > 1:
+                candidates.append({"id": index, "sentences": sentences(original),
+                                   "available_seconds": round(min(8.5, row["decided_at"] - row["thinking_at"] - .95), 1)})
+        choices = self.choose_sentences(candidates)
         previous_end = -BREATH
         for i, row in enumerate(rows):
             candidate = choices.get(i)
@@ -220,3 +224,7 @@ class SceneEdit(ContinuousEdit):
             if row["text"]:
                 previous_end = row["speech_finished_at"]
         return rows
+
+    def render_post_speech(self, rows, cache, voice, voice_spec):
+        from scene_narration import render_post_speech
+        return render_post_speech(rows, cache, voice, voice_spec, self.choose_sentences)

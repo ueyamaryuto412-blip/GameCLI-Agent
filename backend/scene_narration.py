@@ -1,10 +1,13 @@
 """Schedule recorded remarks inside the observation that prompted them."""
 import csv
+import hashlib
 import json
 import re
 import wave
 from collections import defaultdict
 from datetime import datetime
+from tempfile import NamedTemporaryFile
+from pathlib import Path
 
 from zundamon import Voicevox
 
@@ -40,6 +43,75 @@ def write_edited_voice(work, cues, edited, length):
 
 def sentences(text):
     return [s.strip() for s in re.findall(r"[^。！？!?]+[。！？!?]*", text) if s.strip()]
+
+
+def render_post_speech(rows, cache, voice, voice_spec, choose_sentences):
+    """Select from the recorded words, then fit actual WAVs to their observed scenes."""
+    cache.mkdir(exist_ok=True, parents=True)
+    choices, windows, candidates = {}, [], []
+    for i, row in enumerate(rows):
+        pending = row.get("speech_pending", False)
+        # Preserve the edit decision for an already narrated archive.
+        text = row["original_text"] if pending else row["text"]
+        if pending:
+            start = row["thinking_at"] + .65
+            end = row["decided_at"] - .3
+        else:
+            start = min(row["at"], row.get("thinking_at", row["at"]) + .65)
+            end = max(row["speech_finished_at"], row.get("decided_at", 0) - .3)
+        if row.get("inputs"):
+            end = min(end, row["inputs"][0]["at"])
+        if i+1 < len(rows):
+            nxt = rows[i+1]
+            end = min(end, nxt.get("thinking_at", nxt["at"]))
+        limit = 18 if row.get("greeting") or i == 0 else 8.5
+        budget = min(limit, end - start)
+        windows.append((start, end, limit))
+        if budget <= 0 or not text.strip():
+            continue
+        parts = sentences(text)
+        if pending and len(parts) > 1 and len(text) > budget * 5:
+            candidates.append({"id": i, "sentences": parts, "available_seconds": round(budget, 1)})
+        else:
+            choices[i] = text
+    choices.update(choose_sentences(candidates))
+
+    rendered = []
+    previous_end = -BREATH
+    for i, original in enumerate(rows):
+        row = dict(original)
+        row.update(text="", spoken_file="", speech_finished_at=row["at"])
+        rendered.append(row)
+        start, end, limit = windows[i]
+        start = max(start, previous_end + BREATH)
+        budget = min(limit, end - start)
+        text = choices.get(i, "")
+        if not text or len(text) > budget * 10:
+            continue
+        identity = json.dumps([voice_spec, text], ensure_ascii=False, sort_keys=True)
+        path = cache / (hashlib.sha256(identity.encode()).hexdigest() + ".wav")
+        if not path.is_file():
+            with NamedTemporaryFile(dir=cache, suffix=".wav", delete=False) as tmp:
+                pending_path = Path(tmp.name)
+            try:
+                voice.write(text, pending_path)
+                with wave.open(str(pending_path)) as wav:
+                    if ((wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) != (1, 2, VOICE_RATE)
+                            or not wav.getnframes()):
+                        raise ValueError("Post-production requires a mono 24 kHz PCM16 WAV.")
+                pending_path.replace(path)
+            finally:
+                pending_path.unlink(missing_ok=True)
+        with wave.open(str(path)) as wav:
+            duration = wav.getnframes() / wav.getframerate()
+        if duration <= budget:
+            at = max(start, min(original["at"], end-duration)) if not original.get("speech_pending") else end-duration
+            row.update(text=text, at=at, speech_finished_at=at+duration,
+                       spoken_file=str(path.resolve()), original_text=original.get("original_text", text))
+            previous_end = at+duration
+    if any(r.get("original_text") or r["text"] for r in rows) and not any(r["text"] for r in rendered):
+        raise ValueError("No selected line fits its scene. Check narration timings and voice pacing before exporting.")
+    return rendered
 
 
 def fit_scene_line(text, observed, decided, previous_end, speak, path, greeting=False):

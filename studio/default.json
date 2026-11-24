@@ -11,14 +11,13 @@
       "reasoning_effort": "high"
     }
   },
+  "player_speech_stage": "post",
   "player_voice": {
-    "factory": "zundamon:Voicevox",
+    "factory": "gemini_tts:GeminiVoice",
     "options": {
-      "character": "四国めたん",
-      "style": "ノーマル",
-      "speed": 1.02,
-      "pitch": -0.045,
-      "intonation": 0.9
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Algenib",
+      "style": "自然な日本語で、ゲームを見ながらふと思いついたことを話す。短い間と柔らかな語尾。"
     }
   },
   "host": {

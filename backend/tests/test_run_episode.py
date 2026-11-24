@@ -58,12 +58,12 @@ def test_unconfirmed_end_keeps_source_and_does_not_export(tmp_path, monkeypatch)
     assert not produce.read_json(tmp_path / "ending.json")["confirmed"]
 
 
-def test_selected_person_uses_first_ranked_voice_for_capture_and_edit(tmp_path, monkeypatch):
+def test_selected_person_uses_first_ranked_gemini_voice_for_edit(tmp_path, monkeypatch):
     data = report()
-    cast = dict(source_title="資料", source_url="https://example.org/source", evidence="本人の著作",
+    cast = dict(engine="gemini", source_title="資料", source_url="https://example.org/source", evidence="本人の著作",
                 interpretation="声の高さは推定", candidates=[
-                    dict(style="M4", speed=.96, reason="短い句が明瞭"),
-                    dict(style="M1", speed=1.02, reason="抑揚が広い")])
+                    dict(style="Orus", speed=.96, reason="短い句が明瞭"),
+                    dict(style="Algenib", speed=1.02, reason="抑揚が広い")])
     data["picks"][1]["voice_cast"] = cast
     class Inspector:
         def prepare(self, episode, candidate, folder):
@@ -78,6 +78,8 @@ def test_selected_person_uses_first_ranked_voice_for_capture_and_edit(tmp_path, 
     run_episode.run_episode(tmp_path, data, studio, {"factory": "test"})
     saved = produce.read_json(tmp_path / "production.json")
     assert saved["studio"] == recorded[0]
-    assert recorded[0]["player_voice"]["options"] == {"style": "M4", "speed": .96}
+    assert recorded[0]["player_speech_stage"] == "post"
+    assert recorded[0]["player_voice"]["options"]["voice"] == "Orus"
+    assert cast["interpretation"] in recorded[0]["player_voice"]["options"]["style"]
     assert saved["proposal"]["voice_cast"] == cast
     assert recorded[0]["host_voice"] == studio["host_voice"]

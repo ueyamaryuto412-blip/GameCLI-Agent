@@ -1,4 +1,4 @@
-"""Ranked historical voice choices. Only local, installed adapter presets can be selected."""
+"""Historical casting for current Gemini voices and archived Supertonic shortlists."""
 from urllib.parse import urlsplit
 
 
@@ -8,6 +8,10 @@ PITCH_REFERENCE = {
     "M4": [108, 121, 149], "M5": [80, 94, 104], "F1": [180, 192, 213],
     "F2": [184, 205, 259], "F3": [170, 226, 245], "F4": [188, 196, 226],
 }
+
+GEMINI_VOICES = {"Algenib": "少しかすれた響き", "Gacrux": "成熟した響き", "Algieba": "滑らか",
+                 "Orus": "芯がある", "Enceladus": "息を含む", "Iapetus": "明瞭",
+                 "Sulafat": "温かい", "Achernar": "柔らかい", "Puck": "軽快", "Kore": "きっぱり"}
 
 
 def validate_cast(cast):
@@ -21,12 +25,15 @@ def validate_cast(cast):
     if not isinstance(choices, list) or not 2 <= len(choices) <= 3:
         raise ValueError("声の候補を推薦順に2〜3件指定してください。")
     seen = set()
+    catalog = GEMINI_VOICES if cast.get("engine") == "gemini" else PITCH_REFERENCE
+    if cast.get("engine", "supertonic") not in ("supertonic", "gemini"):
+        raise ValueError("Unknown casting engine")
     for choice in choices:
         if not isinstance(choice, dict):
             raise ValueError("音声候補の形式が無効です。")
         style = choice.get("style")
         speed = choice.get("speed")
-        if (not isinstance(style, str) or style not in PITCH_REFERENCE or style in seen
+        if (not isinstance(style, str) or style not in catalog or style in seen
                 or type(speed) not in (float, int) or not .85 <= speed <= 1.15
                 or not isinstance(choice.get("reason"), str) or not choice["reason"].strip()):
             raise ValueError("候補には異なる登録音声、0.85〜1.15の速度、選定理由が必要です。")
@@ -39,5 +46,15 @@ def studio_for_pick(studio, selection):
     cast = selection["voice_cast"]
     validate_cast(cast)
     best = cast["candidates"][0]
+    spec = studio.get("player_voice", {})
+    if spec.get("factory") == "gemini_tts:GeminiVoice":
+        options = dict(spec.get("options", {}))
+        if cast.get("engine") == "gemini" and not options.get("voice", "").startswith(("voice_", "voicekey_")):
+            options["voice"] = best["style"]
+        options["style"] = (f"{options.get('style', '')} {cast['interpretation']} "
+                            f"話す速さは通常の約{best['speed']}倍を目安にする。").strip()
+        return {**studio, "player_voice": {**spec, "options": options}}
+    if cast.get("engine") == "gemini":
+        return studio
     return {**studio, "player_voice": {"factory": "supertonic_host:PlayerVoice",
                                        "options": {"style": best["style"], "speed": best["speed"]}}}

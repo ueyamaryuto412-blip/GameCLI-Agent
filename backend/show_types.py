@@ -57,8 +57,8 @@ class Player(Protocol):
 
 
 class Recorder(Protocol):
-    def capture(self, episode: Episode, folder: Path, player: Player, voice: Voice, minutes: float) -> str:
-        """Write game.mkv (24 fps + audio), narration.json and spoken WAVs; return stop reason."""
+    def capture(self, episode: Episode, folder: Path, player: Player, voice: Voice | None, minutes: float) -> str:
+        """Record gameplay and timed lines. A supplied voice also renders WAVs during capture."""
 
 
 class Host(Protocol):

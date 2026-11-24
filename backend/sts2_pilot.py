@@ -181,6 +181,15 @@ async def capture_session(folder, window_title, process, instructions, speak, *,
             text = message["message"].strip()
             filename = f"spoken/{len(lines):03}.wav"
             path = folder / filename
+            if speak is None:
+                observed = thinking_at if thinking_at is not None else now
+                lines.append(dict(decided_at=now, thinking_at=observed, at=observed, text="",
+                                  original_text=text, speech_pending=True, spoken_file="",
+                                  last_action=now, inputs=[], planned_actions=message.get("planned_actions", []),
+                                  greeting=bool(message.get("greeting")), speech_finished_at=observed))
+                thinking_at = None
+                save_log()
+                return
             if scene_speech and thinking_at is not None:
                 from scene_narration import fit_scene_line
                 greeting = message.get("greeting", False)

@@ -1,6 +1,29 @@
 # AIゲーム観測室｜メインPCへの引き継ぎ
 
-## 先に試すもの
+## 本番のプレイAI音声 — Gemini 3.8 Flash TTS
+
+収録PCはゲーム画面・音・観察時刻・操作・その場の台詞を記録する。編集PCは選んだ台詞をGeminiで合成し、実際の音声が場面に収まるものを使う。新しい企画では調査AIが声を選ぶ。旧フランクリン企画の仮配役はAlgenib。「印刷屋なら」のQwenテイクは聴き比べ用。管理AIの声はSupertonic F5。
+
+メインPCの移行用ブランチで `git pull --ff-only` を実行し、制作環境に `.\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt` で依存関係を入れる。認証はクレジット対象のプロジェクトに合わせて選ぶ。
+
+- **AI StudioのGemini APIキー**　環境変数またはリポジトリ直下のローカル `.env` に `GEMINI_API_KEY` を設定する。
+- **Google CloudのVertex AI**　対象プロジェクトでVertex AI APIを有効にして `gcloud auth application-default login` を実行し、環境変数 `GEMINI_TTS_VERTEX_PROJECT` にそのプロジェクトIDを設定する。この変数を指定するとVertex AIを使用する。
+
+1台詞だけ生成して声と所要時間を確認する。
+
+```powershell
+.\.venv\Scripts\python.exe backend/gemini_tts.py --output recordings/gemini-franklin.wav
+```
+
+下記「既存の映像を再編集する場合」のZIPを展開してから、一戦を吹き替える。
+
+```powershell
+.\.venv\Scripts\python.exe backend/produce.py --proposal episodes/research/20261125-000329-franklin-voice/shortlist.json --from-recording recordings/franklin-trial-20261124-195630
+```
+
+同じ番組フォルダーで `--resume` すると、`player-audio/` の生成済みWAVを同じ声設定・台詞に再利用する。配役は `studio/default.json` のコピーで `player_voice.options.voice` を変更し、`--studio` で渡せる。作成済みのカスタム声ID（`voice_...`）も指定できる。[Geminiの音声仕様](https://aistudio.google.com/docs/speech-generation) · [Vertex AIの音声仕様](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/text-to-speech/overview)
+
+## Qwenの比較音源とローカル試聴
 
 フランクリン役に選んだ「印刷屋なら」の元音声は [reference.wav](studio/voices/franklin/reference.wav)（7.36秒）。これをお手本にして、同じ話者設定から生成した [剣が出た瞬間](studio/voices/franklin/clone-sword.wav) と [次の一手の予想](studio/voices/franklin/clone-count.wav) を同梱した。元音声は歴史上の本人を演じるために設計した合成音声。台詞、読み、演技指示、チェックサムは [reference.json](studio/voices/franklin/reference.json) にある。
 
@@ -44,11 +67,11 @@ codex login status
 
 | 作業 | 入口と現在の動作 |
 | --- | --- |
-| ゲーム・人物の調査 | `backend/research.py` と `studio/research.json`。SteamとYouTubeを調べ、企画と音声候補を出力。現行の調査AIが順位づけする音声はSupertonicの候補。 |
+| ゲーム・人物の調査 | `backend/research.py` と `studio/research.json`。SteamとYouTubeを調べ、企画と音声候補を出力。現行の調査AIはGeminiの声を順位づけする。 |
 | 準備・収録・書き出し | `backend/run_episode.py` で調査から接続。`backend/produce.py` で既存企画・素材から制作。`studio/default.json` が管理AI、収録、編集、音声、書き出しの接続先。 |
 | STS2の収録範囲 | `studio/games/sts2.json` は1ラン用。`studio/episodes/dr-claude-act1/` に第1章で終了する実績のある設定がある。このフォルダーには当時の声・管理AIの割り込み設定も残る。現在の番組設定は `studio/default.json` を参照。 |
 | 音声と編集 | 既存収録は入力と発言を記録し、設定に応じて収録中に音声も生成する。`backend/scene_narration.py` が映像に収まる発言を選び、`backend/gameplay_seams.py` がカット前後の映像と音を処理する。 |
-| 固定声の後生成 | `backend/audition_franklin.py` でローカル合成と計測が可能。編集で選ばれた台詞を一括でこのモデルに渡し、番組MP4へ戻す接続は次の実装項目。 |
+| 固定声の後生成 | `backend/audition_franklin.py` でローカル合成と計測が可能。本番の後生成はGeminiを使い、Qwenは比較用に残している。 |
 
 ## 既存の映像を再編集する場合
 
@@ -72,4 +95,4 @@ Expand-Archive -LiteralPath $zip -DestinationPath .\recordings
 
 ## 次のセッションに渡す文
 
-> HANDOFF.mdを読み、まずRTX 5060 Tiでフランクリンの「印刷屋なら」を参照音声に、同じ2台詞を生成してCPU実測と比較してください。次に、プレイ中は観察時刻・操作・その場の台詞を記録し、編集に採用した台詞だけを後から同じ声で合成できるアダプターをつないでください。最初はフランクリン試走の一戦を使い、驚いた瞬間と発声のタイミング、息継ぎ、ゲーム音を確認します。管理AIは冒頭と締めに登場します。投稿前に人間が確認します。
+> メインPCのクレジット対象プロジェクトでGeminiの1台詞を試聴してください。その後、フランクリンの試走素材を使って一戦を吹き替え、声質、画面との同期、息継ぎを確認してください。管理AIの出番は冒頭と締めです。

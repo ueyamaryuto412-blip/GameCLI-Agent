@@ -59,6 +59,13 @@ def adapter(spec):
 
 def validate_studio(settings, live):
     stages = ["host", "host_voice", "editor", "design", "exporter"]
+    stage = settings.get("player_speech_stage", "capture")
+    if stage not in ("post", "capture"):
+        raise ValueError("player_speech_stage must be post or capture")
+    if stage == "post":
+        if not hasattr(adapter_factory(settings["editor"]), "render_post_speech"):
+            raise ValueError("Post-production speech needs a compatible editor (e.g. SceneEdit)")
+        stages.append("player_voice")
     if live:
         stages.extend(["recorder", "player", "player_voice"])
     for stage in stages:
@@ -112,6 +119,9 @@ def validate_source(source):
         if not last <= row["at"] <= row["speech_finished_at"]:
             raise ValueError("Unfinished or unordered narration log")
         last = row["at"]
+        if row.get("speech_pending") and (row["text"] or row["spoken_file"] or
+                not isinstance(row.get("original_text"), str) or not 0 <= row["thinking_at"] <= row["decided_at"]):
+            raise ValueError("Invalid deferred commentary in narration.json")
         if row["text"].strip() and not (source / row["spoken_file"]).is_file():
             raise FileNotFoundError(source / row["spoken_file"])
     return rows
@@ -175,7 +185,13 @@ def post(job, episode, settings, source, credit, stop_reason):
     exporter: Exporter = adapter(settings["exporter"])
     with tempfile.TemporaryDirectory(prefix="mix-", dir=job) as temp:
         work = Path(temp)
-        if hasattr(editor, "prepare_speech"):
+        if settings.get("player_speech_stage") == "post":
+            player_voice = adapter(settings["player_voice"])
+            rows = editor.render_post_speech(rows, job / "player-audio", player_voice, settings["player_voice"])
+            credit = player_voice.credit
+        elif any(row.get("speech_pending") for row in rows):
+            raise ValueError("This recording requires player_speech_stage=post to generate its commentary.")
+        elif hasattr(editor, "prepare_speech"):
             rows = editor.prepare_speech(rows, work, adapter(settings["player_voice"]))
         intro_text, traits = host.opening(episode)
         opening = speak(voice, intro_text, work, "opening")
@@ -232,12 +248,13 @@ def record_source(job, episode, settings, source, minutes):
     recorder: Recorder = adapter(settings["recorder"])
     source.mkdir()
     previous = Path.cwd()
-    with (open_voice(**voice_spec.get("options", {})) if open_voice
+    with (nullcontext(None) if settings.get("player_speech_stage") == "post"
+          else open_voice(**voice_spec.get("options", {})) if open_voice
           else nullcontext(adapter(voice_spec))) as player_voice:
         try:
             os.chdir(source)
             stop = recorder.capture(episode, source, player, player_voice, minutes)
-            credit = player_voice.credit
+            credit = player_voice.credit if player_voice else "編集時に生成"
         finally:
             os.chdir(previous)
     validate_source(source)
@@ -377,7 +394,7 @@ def main():
     else:
         game, persona = resolve_game(args.game, live=not args.from_recording), args.persona.strip()
     settings = read_json(args.studio or DEFAULT_STUDIO)
-    if not args.from_recording:
+    if not args.from_recording or (selection and settings.get("player_speech_stage") == "post"):
         settings = studio_for_pick(settings, selection)
     else:
         # SceneEdit may resynthesize a shorter take; match the voice of the actual recording.

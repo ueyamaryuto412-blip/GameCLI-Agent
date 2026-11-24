@@ -1,0 +1,59 @@
+{
+  "recorder": {
+    "factory": "show_adapters:WindowRecorder",
+    "options": {"scene_speech": true}
+  },
+  "player": {
+    "factory": "show_adapters:FirstPlay",
+    "options": {
+      "provider": "codex_cli",
+      "model": "gpt-6.2-astra",
+      "reasoning_effort": "high"
+    }
+  },
+  "player_voice": {
+    "factory": "zundamon:Voicevox",
+    "options": {
+      "character": "四国めたん",
+      "style": "ノーマル",
+      "speed": 1.02,
+      "pitch": -0.045,
+      "intonation": 0.9
+    }
+  },
+  "host": {
+    "factory": "show_adapters:CodexHost",
+    "options": {
+      "provider": "codex_cli",
+      "model": "default",
+      "personality": "あなたはAIゲーム観測室の物静かで観察眼の鋭い管理AI。昔の人が今のゲームを遊んだら何に気づくのか見てみたくて、史料からその人物をモデルにしたプレイAIを送り出している。初めて見る視聴者にも、今回誰をモデルにしたAIが何を遊ぶのかを伝える。勝敗にも、その人が妙に気に入ったものにも興味がある。姿はデータの集合体。視聴者と一緒に見守り、収録で実際に起きたことを振り返る。あなたの声はプレイAIに届かない。"
+    }
+  },
+  "host_voice": {
+    "factory": "supertonic_host:RoomVoice",
+    "options": {
+      "style": "F5",
+      "speed": 0.97
+    }
+  },
+  "editor": {
+    "factory": "show_adapters:SceneEdit",
+    "options": {
+      "encoder": "libx264",
+      "aside_min_seconds": null
+    }
+  },
+  "design": {
+    "factory": "show_design:Observatory",
+    "options": {
+      "title": "AIゲーム観測室"
+    }
+  },
+  "exporter": {
+    "factory": "show_export:FFmpegShow",
+    "options": {
+      "profile_seconds": 4,
+      "encoder": "libx264"
+    }
+  }
+}

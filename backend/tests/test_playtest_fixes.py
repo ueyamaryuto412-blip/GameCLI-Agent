@@ -16,6 +16,14 @@ from screen_capture import ScreenCapture  # noqa: E402
 import action_verifier  # noqa: E402
 import llm as llm_mod  # noqa: E402
 from agent_loop import AgentLoop  # noqa: E402
+from safety import SafetyFilter
+
+
+def test_scroll_clamps_pointer_but_preserves_wheel_direction():
+    safety = SafetyFilter()
+    assert safety.clamp_coordinates("scroll 650 530 -8") == ("scroll 650 530 -8", False, "")
+    assert safety.clamp_coordinates("scroll -2 721 -8")[0] == "scroll 5 715 -8"
+    assert safety.clamp_coordinates("drag 10 10 -2 721")[0] == "drag 10 10 5 715"
 
 
 @pytest.fixture
@@ -193,11 +201,12 @@ def test_first_play_decides_speech_and_action_together(monkeypatch):
     player = llm_mod.LLMIntegration("openrouter")
     player.two_call = True
     prompts = []
-    reply = {"narration": "あの店に寄ろう。", "actions": [{"command": "click 20 40"}]}
+    reply = {"narration": "あの店に寄ろう。", "actions": [{"command": "click 20 40"}],
+             "input_mode": "local_solo", "input_target": "商店"}
 
     def answer(prompt, image, model, **kwargs):
         prompts.append(prompt)
-        assert kwargs["schema"] == llm_mod.STEP_SCHEMA
+        assert kwargs["schema"] == llm_mod.FIRST_PLAY_SCHEMA
         return reply
 
     monkeypatch.setattr(player, "_call_api", answer)

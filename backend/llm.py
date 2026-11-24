@@ -7,6 +7,8 @@ import os
 import tempfile
 import time
 from pathlib import Path
+from solo_play import MODES, MODE_PROMPT
+from observation_timing import TIMING_PROMPT, with_observation_timing
 
 try:
     import requests as _requests
@@ -78,15 +80,19 @@ RULES:
 # Each role provides instructions that modify the agent's behaviour and narration style.
 ROLE_PROMPTS = {
     "first_play": (
-        "初見のゲームを遊ぶ日本語の実況者。一人称はぼく。買い物好きで、心配になると暗算を始める。"
-        "知らないアイテムには思わず手が伸びる。ゲームに店がないときは無理に買い物の話をしない。"
+        "あなたは初見でゲームをプレイし、自分で実況するAI。人物設定がある回はそれに従う。"
         "今回の画面、渡された操作説明、今回のプレイで観察した出来事を頼りに選択する。"
         "未確認の攻略知識や先の展開を持ち込まず、予想と実際の結果を区別する。"
-        "ゲーム別の人物設定を優先する。narrationには視聴者に聞かせたい短い日本語の台詞を入れる。"
-        "選択肢があるときは、目的を達成できる手の中でキャラの好みが実際のactionsを決める。"
+        "話題も言い回しも自分で選ぶ。画面で確認した事実はlast_step_check、操作の根拠はactionsのreasonに書ける。"
+        "選択肢があるときは、何を試したいかも含めて実際のactionsを自分で決める。"
         "actionsのreasonには選んだ対象と決め手を残す。競合する候補が見えていて迷った時だけ、"
         "そちらを見送った理由も短く残す。台詞とコマンドは同じ判断から作る。"
-        "定型的な操作報告や直前の言い直しは省く。絵と音だけで十分な手ではnarrationを空文字にできる。"
+        "視聴者も同じ画面を見ている。narrationは遊びながら思わず口に出た言葉でいい。"
+        "一言で気が済んだらそこで操作に移る。何かを試すたびに手順を予告したり、感想の後に解説を足したりしない。"
+        "直前までの自分の発言や選択を踏まえ、予想が外れたり見方が変わったら、その変化を話してよい。"
+        "普通の手を進めながら考えの続きを話してよい。さっき自分が出した結論は視聴者も覚えている。"
+        "一つの話が済んだら言い換えて引き延ばさず、その場でふと思ったことに話を移してよい。"
+        "目に入った順の読み上げ、同じ期待の言い直し、毎手を疑問で締める癖は避ける。"
         "操作コマンド名とJSONキーは指定の英語のまま返す。"
     ),
     "gamer": (
@@ -243,6 +249,7 @@ Keep your directive concise (3-8 sentences). Focus on WHAT to do, not HOW to for
 # Shared by the Worker and Combined prompts: the agent judges whether its
 # previous actions worked from the new screenshot (GCA-001) instead of the
 # harness guessing from pixel diffs.
+QA_WAIT_GUIDANCE = 'Avoid "wait": the harness already lets the screen settle after each action. Waits are capped at 2 seconds.'
 STEP_CHECK_RULES = """
 CHECKING YOUR PREVIOUS STEP:
 - The request may include "PREVIOUS STEP", listing the actions you sent last time, what you expected each one to do,
@@ -284,7 +291,7 @@ AIMING:
 
 EFFICIENCY:
 - Hover only when you need to read a tooltip; do not hover before every click.
-- Avoid "wait": the harness already lets the screen settle after each action. Waits are capped at 2 seconds.
+- """ + QA_WAIT_GUIDANCE + """
 - Plan several actions per step when the screen will not change in between (e.g. play a whole turn).
 """
 
@@ -471,6 +478,12 @@ STEP_SCHEMA = {
                  "findings", "narration", "actions"],
     "additionalProperties": False,
 }
+FIRST_PLAY_SCHEMA = with_observation_timing({
+    **STEP_SCHEMA,
+    "properties": {**STEP_SCHEMA["properties"], "input_mode": {"type": "string", "enum": list(MODES)},
+                   "input_target": {"type": "string"}},
+    "required": [*STEP_SCHEMA["required"], "input_mode", "input_target"],
+})
 DEFAULT_PRICING = (1.00, 3.00)  # conservative fallback
 
 # Stronger model used for a step when the agent is stuck (GCA-009).
@@ -615,8 +628,11 @@ class LLMIntegration:
     }
 
     def __init__(self, provider: str = "gemini_cli", api_key: str = None,
-                 secondary_api_key: str = None, max_budget_usd: float = 0.0):
+                 secondary_api_key: str = None, max_budget_usd: float = 0.0, reasoning_effort: str = None,
+                 web_research: bool = False):
         self.provider = provider
+        self.reasoning_effort = reasoning_effort
+        self.web_research = web_research
         self.api_key = api_key
         self.secondary_api_key = secondary_api_key
         self._using_secondary = False  # tracks which key is active
@@ -771,10 +787,13 @@ class LLMIntegration:
             output = Path(directory, "reply.txt")
             cmd = [binary, "exec", "--ignore-user-config", "--ephemeral", "--skip-git-repo-check",
                    "--sandbox", "read-only", "-c", "forced_login_method=chatgpt",
-                   "-c", "web_search=disabled", "--disable", "apps", "--disable", "plugins",
+                   "-c", "web_search=live" if self.web_research else "web_search=disabled",
+                   "--disable", "apps", "--disable", "plugins",
                    "--disable", "shell_tool", "--output-last-message", str(output)]
             if model_name != "default":
                 cmd.extend(["--model", model_name])
+            if self.reasoning_effort:
+                cmd.extend(["-c", f"model_reasoning_effort={self.reasoning_effort}"])
             for index, frame in enumerate(filter(None, (image_base64, self._extra_image))):
                 path = Path(directory, f"frame-{index}.jpg")
                 path.write_bytes(base64.b64decode(frame, validate=True))
@@ -1167,7 +1186,12 @@ class LLMIntegration:
         Anthropic API can cache it — and a dynamic part for this step."""
 
         prompt_template = COMBINED_AGENT_PROMPT.replace("{role_instructions}", role_instructions)
-        narration_format = ("今の選択や発見を日本語で一息。画面で分かる案内や作品名の読み上げは省く。無言も可。"
+        schema = STEP_SCHEMA
+        if role == "first_play":
+            prompt_template = prompt_template.replace(QA_WAIT_GUIDANCE, TIMING_PROMPT)
+            prompt_template += "\n" + MODE_PROMPT
+            schema = FIRST_PLAY_SCHEMA
+        narration_format = ("この場で自分から出た実況を日本語で。"
                             if role == "first_play" else
                             "What game this is, what you see, and what you plan to do (2-5 sentences).")
         prompt_template = prompt_template.replace("{narration_format}", narration_format)
@@ -1201,20 +1225,20 @@ class LLMIntegration:
 
         if self.provider == ANTHROPIC_PROVIDER:
             response = self._call_anthropic(static, dynamic, image_base64, model_name,
-                                            expect_json=True, schema=STEP_SCHEMA)
+                                            expect_json=True, schema=schema)
         elif self.provider in CLI_PROVIDERS:
             response = self._call_cli(static + dynamic, image_base64, model_name, expect_json=True)
         else:
             try:
                 response = self._call_api(static + dynamic, image_base64, model_name,
-                                          expect_json=True, schema=STEP_SCHEMA)
+                                          expect_json=True, schema=schema)
             except ValueError as e:
                 # No parsable JSON (e.g. the model wrote tool-call XML): ask once more.
                 print(f"  [api] unparsable step reply ({str(e)[:80]}) — retrying once")
                 response = self._call_api(
                     static + dynamic + "\nYour previous reply was not valid JSON. Reply with ONLY the JSON object "
                     "described in FORMAT — no tool calls, no XML, no prose.",
-                    image_base64, model_name, expect_json=True, schema=STEP_SCHEMA)
+                    image_base64, model_name, expect_json=True, schema=schema)
         print(f"  [combined_agent] narration: {response.get('narration', '')[:120]}...")
         return response
 

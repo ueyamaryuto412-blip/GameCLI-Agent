@@ -1,0 +1,12 @@
+{
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+  "language": "Japanese",
+  "text": "刃の額面は十八、相手は三匹。印刷屋なら同じ版で三枚刷れるところだ。",
+  "reference_text": "やいばの額面は十八、相手は三匹。印刷屋なら同じ版で三枚すれるところだ。",
+  "instruct": "Native Japanese, spontaneous conversational Japanese. A man in his late seventies with a gently weathered, slightly breathy low voice. Warm, observant and quick-witted. Sitting near the microphone, absorbed in a card game, quietly thinking to himself. Uneven conversational phrasing, short pauses as thoughts occur, and soft sentence endings. Understated, intimate delivery. He counts the enemies. An old memory of his printing shop occurs to him; there is a small smile in his voice.",
+  "seed": 41,
+  "max_new_tokens": 270,
+  "seconds": 7.36,
+  "generation_seconds_cpu": 26.45954250000068,
+  "sha256": "d2894ec82014be8133c30872c0af41e98adb0c001963d1bdaca0189fdfa8d4ae"
+}

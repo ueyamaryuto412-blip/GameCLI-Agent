@@ -1,0 +1,18 @@
+{
+  "preparation": {
+    "factory": "episode_preparation:VisualPreparation",
+    "options": {"provider": "codex_cli", "model": "default"}
+  },
+  "discovery": {
+    "factory": "research_sources:SteamCandidates",
+    "options": {"tags": [1091588, 1664, 1677], "per_tag": 4}
+  },
+  "audience": {
+    "factory": "research_sources:YouTubeExamples",
+    "options": {"limit": 3}
+  },
+  "casting": {
+    "factory": "research:EpisodeCasting",
+    "options": {"provider": "codex_cli", "model": "default"}
+  }
+}

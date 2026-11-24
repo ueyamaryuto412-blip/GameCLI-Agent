@@ -114,8 +114,8 @@ class SafetyFilter:
         clamped = False
         details = []
         new_parts = [parts[0]]
-        coord_idx = 0
-        for p in parts[1:]:
+        coord_count = 4 if cmd_type == "drag" else 2
+        for coord_idx, p in enumerate(parts[1:1 + coord_count]):
             if p.lstrip("-").isdigit():
                 val = int(p)
                 limit = self.config.max_x - MARGIN if coord_idx % 2 == 0 else self.config.max_y - MARGIN
@@ -129,9 +129,9 @@ class SafetyFilter:
                     val = limit
                     clamped = True
                 new_parts.append(str(val))
-                coord_idx += 1
             else:
                 new_parts.append(p)
+        new_parts.extend(parts[1 + coord_count:])
 
         new_cmd = " ".join(new_parts)
         detail_str = ", ".join(details) if details else ""

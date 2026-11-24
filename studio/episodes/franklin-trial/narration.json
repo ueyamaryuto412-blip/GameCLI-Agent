@@ -1,0 +1,902 @@
+[
+  {
+    "decided_at": 9.125,
+    "thinking_at": 0.3429999999998472,
+    "at": 0.9929999999998472,
+    "text": "ごきげんよう、諸君。ベンジャミン・フランクリンです。眼鏡は鼻の上、手帳は……まあ、最初の失敗までには見つかるだろう。さあ、塔の続きを見に行こう。",
+    "original_text": "ごきげんよう、諸君。ベンジャミン・フランクリンです。眼鏡は鼻の上、手帳は……まあ、最初の失敗までには見つかるだろう。さあ、塔の続きを見に行こう。",
+    "spoken_file": "spoken/000.wav",
+    "last_action": 14.764999999999873,
+    "inputs": [
+      {
+        "at": 14.764999999999873,
+        "command": "click 516 453"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 516 453",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 13.760999999999848
+  },
+  {
+    "decided_at": 26.561999999999898,
+    "thinking_at": 17.358999999999924,
+    "at": 26.561999999999898,
+    "text": "",
+    "original_text": "",
+    "spoken_file": "",
+    "last_action": 26.561999999999898,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 26.561999999999898
+  },
+  {
+    "decided_at": 44.40599999999995,
+    "thinking_at": 28.889999999999873,
+    "at": 40.46866666666662,
+    "text": "おや、帳面を開く前に百ゴールドの収入だ。",
+    "original_text": "おや、帳面を開く前に百ゴールドの収入だ。まず財布に収めよう。財布の置き場所なら、今朝は覚えているよ。",
+    "spoken_file": "spoken/002.wav",
+    "last_action": 47.17099999999982,
+    "inputs": [
+      {
+        "at": 47.17099999999982,
+        "command": "click 633 279"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 633 279",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 44.10599999999995
+  },
+  {
+    "decided_at": 55.6869999999999,
+    "thinking_at": 48.63999999999987,
+    "at": 52.03766666666657,
+    "text": "さて、札の字を読むには眼鏡の下半分だ。",
+    "original_text": "さて、札の字を読むには眼鏡の下半分だ。どんな一手が加わるか、見てみよう。",
+    "spoken_file": "spoken/003.wav",
+    "last_action": 57.8119999999999,
+    "inputs": [
+      {
+        "at": 57.8119999999999,
+        "command": "click 633 279"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 633 279",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 55.3869999999999
+  },
+  {
+    "decided_at": 66.59299999999985,
+    "thinking_at": 59.358999999999924,
+    "at": 62.33566666666652,
+    "text": "私には、真ん中の「追尾の刃」がよく思える。",
+    "original_text": "私には、真ん中の「追尾の刃」がよく思える。敵が三体並んでも、一振りで皆に届く。さて、試す機会はあるかな。",
+    "spoken_file": "spoken/004.wav",
+    "last_action": 69.625,
+    "inputs": [
+      {
+        "at": 69.625,
+        "command": "click 640 399"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 640 399",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 66.29299999999985
+  },
+  {
+    "decided_at": 76.90599999999995,
+    "thinking_at": 71.53099999999995,
+    "at": 73.36333333333329,
+    "text": "さて、眼鏡の上半分で道の先を見よう。",
+    "original_text": "さて、眼鏡の上半分で道の先を見よう。",
+    "spoken_file": "spoken/005.wav",
+    "last_action": 77.82799999999997,
+    "inputs": [
+      {
+        "at": 77.82799999999997,
+        "command": "click 1144 547"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 1144 547",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 76.60599999999995
+  },
+  {
+    "decided_at": 84.375,
+    "thinking_at": 79.8119999999999,
+    "at": 84.375,
+    "text": "",
+    "original_text": "",
+    "spoken_file": "",
+    "last_action": 84.375,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 84.375
+  },
+  {
+    "decided_at": 92.21799999999985,
+    "thinking_at": 85.6869999999999,
+    "at": 88.82466666666652,
+    "text": "道が二つに分かれるのは、あの敵の先か。",
+    "original_text": "道が二つに分かれるのは、あの敵の先か。チェスでもこれほど初手に迷わずに済むことは珍しいね。",
+    "spoken_file": "spoken/007.wav",
+    "last_action": 94.4369999999999,
+    "inputs": [
+      {
+        "at": 94.4369999999999,
+        "command": "click 631 349"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 631 349",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 91.91799999999985
+  },
+  {
+    "decided_at": 105.53099999999995,
+    "thinking_at": 96.85899999999992,
+    "at": 105.53099999999995,
+    "text": "",
+    "original_text": "",
+    "spoken_file": "",
+    "last_action": 105.53099999999995,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 105.53099999999995
+  },
+  {
+    "decided_at": 114.26499999999987,
+    "thinking_at": 106.85899999999992,
+    "at": 108.7063333333332,
+    "text": "おや、まだ地図を広げたままだ。もう一度、敵の印を押してみよう。",
+    "original_text": "おや、まだ地図を広げたままだ。もう一度、敵の印を押してみよう。",
+    "spoken_file": "spoken/009.wav",
+    "last_action": 115.54599999999982,
+    "inputs": [
+      {
+        "at": 115.54599999999982,
+        "command": "click 632 348"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 632 348",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 113.96499999999988
+  },
+  {
+    "decided_at": 124.20299999999997,
+    "thinking_at": 117.98399999999992,
+    "at": 124.20299999999997,
+    "text": "",
+    "original_text": "",
+    "spoken_file": "",
+    "last_action": 124.20299999999997,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 124.20299999999997
+  },
+  {
+    "decided_at": 133.73399999999992,
+    "thinking_at": 126.0,
+    "at": 131.8126666666666,
+    "text": "同じ印を二度押した。",
+    "original_text": "同じ印を二度押した。手帳に点を二つ打つ前に、印に指を置いて、何が変わるか見てみよう。",
+    "spoken_file": "spoken/011.wav",
+    "last_action": 135.73399999999992,
+    "inputs": [
+      {
+        "at": 135.73399999999992,
+        "command": "hover 632 349"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 632 349",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 133.4339999999999
+  },
+  {
+    "decided_at": 146.0,
+    "thinking_at": 136.98399999999992,
+    "at": 140.11066666666665,
+    "text": "ふむ。敵の印はそのままだ。ひとつ手前、道の起点を確かめてみよう。",
+    "original_text": "ふむ。敵の印はそのままだ。ひとつ手前、道の起点を確かめてみよう。",
+    "spoken_file": "spoken/012.wav",
+    "last_action": 147.32799999999997,
+    "inputs": [
+      {
+        "at": 147.32799999999997,
+        "command": "click 654 510"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 654 510",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 145.7
+  },
+  {
+    "decided_at": 156.60899999999992,
+    "thinking_at": 149.375,
+    "at": 156.60899999999992,
+    "text": "",
+    "original_text": "",
+    "spoken_file": "",
+    "last_action": 156.60899999999992,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 156.60899999999992
+  },
+  {
+    "decided_at": 167.0619999999999,
+    "thinking_at": 158.45299999999997,
+    "at": 164.98066666666656,
+    "text": "おもちゃを五つもくださる？",
+    "original_text": "おもちゃを五つもくださる？　三戦ごとに一つ溶けるそうだが、次の一戦には五つとも持っていける。では、その箱をいただこう。",
+    "spoken_file": "spoken/014.wav",
+    "last_action": 169.71799999999985,
+    "inputs": [
+      {
+        "at": 169.71799999999985,
+        "command": "click 634 660"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 634 660",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 166.7619999999999
+  },
+  {
+    "decided_at": 179.26499999999987,
+    "thinking_at": 171.88999999999987,
+    "at": 173.04499999999987,
+    "text": "まずはこの小さなランタンを。灯りの具合を試すには、塔の暗さは申し分ないね。",
+    "original_text": "まずはこの小さなランタンを。灯りの具合を試すには、塔の暗さは申し分ないね。",
+    "spoken_file": "spoken/015.wav",
+    "last_action": 180.70299999999997,
+    "inputs": [
+      {
+        "at": 180.70299999999997,
+        "command": "click 634 276"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 634 276",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 178.96499999999986
+  },
+  {
+    "decided_at": 189.375,
+    "thinking_at": 182.04599999999982,
+    "at": 187.04833333333332,
+    "text": "この小さなヴァジュラをいただこう。",
+    "original_text": "この小さなヴァジュラをいただこう。私には、先ほど選んだ刃と相性がよく思える。敵が三体並べば、力が一つ増すだけでも、三体それぞれに利く勘定だ。",
+    "spoken_file": "spoken/016.wav",
+    "last_action": 190.09299999999985,
+    "inputs": [
+      {
+        "at": 190.09299999999985,
+        "command": "click 642 470"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 642 470",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 189.075
+  },
+  {
+    "decided_at": 198.10899999999992,
+    "thinking_at": 191.51499999999987,
+    "at": 192.32633333333325,
+    "text": "このグレムリンの角をいただこう。敵が一体倒れたら、どんな札が手に来るかな。",
+    "original_text": "このグレムリンの角をいただこう。敵が一体倒れたら、どんな札が手に来るかな。",
+    "spoken_file": "spoken/017.wav",
+    "last_action": 199.48399999999992,
+    "inputs": [
+      {
+        "at": 199.48399999999992,
+        "command": "click 642 407"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 642 407",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 197.8089999999999
+  },
+  {
+    "decided_at": 209.375,
+    "thinking_at": 200.92099999999982,
+    "at": 202.76033333333334,
+    "text": "パンタグラフか。印刷屋の私は、つい線を写す道具に手が伸びる。ひとついただこう。",
+    "original_text": "パンタグラフか。印刷屋の私は、つい線を写す道具に手が伸びる。ひとついただこう。",
+    "spoken_file": "spoken/018.wav",
+    "last_action": 210.98399999999992,
+    "inputs": [
+      {
+        "at": 210.98399999999992,
+        "command": "click 638 276"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 638 276",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 209.075
+  },
+  {
+    "decided_at": 218.98399999999992,
+    "thinking_at": 212.3119999999999,
+    "at": 216.52933333333326,
+    "text": "この星座早見盤もいただこう。",
+    "original_text": "この星座早見盤もいただこう。今はすこぶる健康だが、いずれ傷を負えば、地図の疑問符に立ち寄る楽しみが一つ増えるね。",
+    "spoken_file": "spoken/019.wav",
+    "last_action": 221.5,
+    "inputs": [
+      {
+        "at": 221.5,
+        "command": "click 638 278"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 638 278",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 218.6839999999999
+  },
+  {
+    "decided_at": 230.26499999999987,
+    "thinking_at": 222.90599999999995,
+    "at": 227.6503333333332,
+    "text": "おもちゃは五つ、勘定は合う。",
+    "original_text": "おもちゃは五つ、勘定は合う。テスカタラさん、ありがとう。さて、あのランタンに灯がともるところを見に行こう。",
+    "spoken_file": "spoken/020.wav",
+    "last_action": 232.70299999999997,
+    "inputs": [
+      {
+        "at": 232.70299999999997,
+        "command": "click 347 660"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 347 660",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 229.96499999999986
+  },
+  {
+    "decided_at": 243.34299999999985,
+    "thinking_at": 235.13999999999987,
+    "at": 237.56033333333318,
+    "text": "さて、最初の敵だ。ランタンのおかげで、初手にどれだけ余裕ができるかな。",
+    "original_text": "さて、最初の敵だ。ランタンのおかげで、初手にどれだけ余裕ができるかな。",
+    "spoken_file": "spoken/021.wav",
+    "last_action": 244.71799999999985,
+    "inputs": [
+      {
+        "at": 244.71799999999985,
+        "command": "click 631 349"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 631 349",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 243.04299999999984
+  },
+  {
+    "decided_at": 254.125,
+    "thinking_at": 247.625,
+    "at": 251.08366666666666,
+    "text": "おや、本当に三体並んでくれた。",
+    "original_text": "おや、本当に三体並んでくれた。あとは「追尾の刃」が手元に来れば、先ほどの勘定を試せるね。",
+    "spoken_file": "spoken/022.wav",
+    "last_action": 251.08366666666666,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 253.825
+  },
+  {
+    "decided_at": 265.90599999999995,
+    "thinking_at": 258.15599999999995,
+    "at": 264.0273333333333,
+    "text": "「追尾の刃」が来た。",
+    "original_text": "「追尾の刃」が来た。眼鏡の下半分で細かな字を読んでおこう。三体とも斬れるものと、もう手帳に勘定をつけかけたよ。",
+    "spoken_file": "spoken/023.wav",
+    "last_action": 268.28099999999995,
+    "inputs": [
+      {
+        "at": 268.28099999999995,
+        "command": "hover 507 660"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 507 660",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 265.60599999999994
+  },
+  {
+    "decided_at": 276.6399999999999,
+    "thinking_at": 269.3119999999999,
+    "at": 273.2893333333332,
+    "text": "まず「追尾の刃」で鍛造を七つ。",
+    "original_text": "まず「追尾の刃」で鍛造を七つ。これでソヴリン・ブレードが三体すべてに届くという。さて、刃にいくつと刻まれるかな。",
+    "spoken_file": "spoken/024.wav",
+    "last_action": 279.40599999999995,
+    "inputs": [
+      {
+        "at": 279.40599999999995,
+        "command": "drag 517 548 540 308"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 517 548 540 308",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 276.33999999999986
+  },
+  {
+    "decided_at": 290.1869999999999,
+    "thinking_at": 282.4209999999998,
+    "at": 283.3803333333332,
+    "text": "真ん中の一匹は八つも食らわせる気だ。こちらの「隠し財産」には何が入っているかな。",
+    "original_text": "真ん中の一匹は八つも食らわせる気だ。こちらの「隠し財産」には何が入っているかな。",
+    "spoken_file": "spoken/025.wav",
+    "last_action": 291.703,
+    "inputs": [
+      {
+        "at": 291.703,
+        "command": "hover 802 665"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 802 665",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 289.8869999999999
+  },
+  {
+    "decided_at": 300.2649999999999,
+    "thinking_at": 292.71799999999985,
+    "at": 296.9463333333332,
+    "text": "刃の額面は十八、相手は三匹。",
+    "original_text": "刃の額面は十八、相手は三匹。印刷屋なら同じ版で三枚刷れるところだ。ひと振りで試してみよう。",
+    "spoken_file": "spoken/026.wav",
+    "last_action": 302.75,
+    "inputs": [
+      {
+        "at": 302.75,
+        "command": "drag 859 560 926 405"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 859 560 926 405",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 299.96499999999986
+  },
+  {
+    "decided_at": 314.7339999999999,
+    "thinking_at": 306.59299999999985,
+    "at": 311.00999999999993,
+    "text": "殻に当たると、十八の刃でも九つまでか。",
+    "original_text": "殻に当たると、十八の刃でも九つまでか。真ん中の一匹から八つ返ってくる勘定だ。まずはエナジーを使わずに粒子障壁を張ろう。",
+    "spoken_file": "spoken/027.wav",
+    "last_action": 317.71799999999985,
+    "inputs": [
+      {
+        "at": 317.71799999999985,
+        "command": "drag 451 660 451 356"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 451 660 451 356",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 314.4339999999999
+  },
+  {
+    "decided_at": 328.9839999999999,
+    "thinking_at": 320.65599999999995,
+    "at": 324.6839999999999,
+    "text": "こちらの守りは九つ、向こうの攻めは合わせて十一。",
+    "original_text": "こちらの守りは九つ、向こうの攻めは合わせて十一。八つを受け持つ真ん中の一匹に、もうひと太刀入れておこう。",
+    "spoken_file": "spoken/028.wav",
+    "last_action": 331.7649999999999,
+    "inputs": [
+      {
+        "at": 331.7649999999999,
+        "command": "drag 450 657 928 431"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 450 657 928 431",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 328.6839999999999
+  },
+  {
+    "decided_at": 343.5149999999999,
+    "thinking_at": 334.78099999999995,
+    "at": 340.6123333333332,
+    "text": "まだ一枚、粒子障壁がある。",
+    "original_text": "まだ一枚、粒子障壁がある。守りは九つ、攻めは十一。星を一つ使えば、差の二つも埋まりそうだね。",
+    "spoken_file": "spoken/029.wav",
+    "last_action": 346.1089999999999,
+    "inputs": [
+      {
+        "at": 346.1089999999999,
+        "command": "drag 762 661 757 353"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 762 661 757 353",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 343.21499999999986
+  },
+  {
+    "decided_at": 356.0,
+    "thinking_at": 349.2339999999999,
+    "at": 354.40933333333334,
+    "text": "守りは九つ。",
+    "original_text": "守りは九つ。残った星は一つで、粒子障壁には二つ要る。手帳の「秩序」に点を一つ。さて、虫たちの番だ。",
+    "spoken_file": "spoken/030.wav",
+    "last_action": 358.5,
+    "inputs": [
+      {
+        "at": 358.5,
+        "command": "click 1142 593"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 1142 593",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 355.7
+  },
+  {
+    "decided_at": 366.7959999999998,
+    "thinking_at": 361.21799999999985,
+    "at": 364.0319999999998,
+    "text": "一匹目で盾が九つから六つへ。",
+    "original_text": "一匹目で盾が九つから六つへ。さて、真ん中の八つには二つ足りないね。",
+    "spoken_file": "spoken/031.wav",
+    "last_action": 364.0319999999998,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 366.4959999999998
+  },
+  {
+    "decided_at": 379.03099999999995,
+    "thinking_at": 370.78099999999995,
+    "at": 376.05366666666663,
+    "text": "二つ通って、体力は七十三。",
+    "original_text": "二つ通って、体力は七十三。さて、「ビッグバン」とは大きく出た名だね。エナジーは一つも要らないそうだ。試してみよう。",
+    "spoken_file": "spoken/032.wav",
+    "last_action": 381.84299999999985,
+    "inputs": [
+      {
+        "at": 381.84299999999985,
+        "command": "drag 438 663 438 345"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 438 663 438 345",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 378.73099999999994
+  },
+  {
+    "decided_at": 395.1869999999999,
+    "thinking_at": 385.1869999999999,
+    "at": 387.8043333333332,
+    "text": "おや、ビッグバンから剣が出た。刃には二十二とある。三匹の殻を通すと、いくつになるかな。",
+    "original_text": "おや、ビッグバンから剣が出た。刃には二十二とある。三匹の殻を通すと、いくつになるかな。",
+    "spoken_file": "spoken/033.wav",
+    "last_action": 387.8043333333332,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 394.8869999999999
+  },
+  {
+    "decided_at": 410.0149999999999,
+    "thinking_at": 397.75,
+    "at": 407.44299999999987,
+    "text": "左から八つ、右から十。",
+    "original_text": "左から八つ、右から十。真ん中の虫は今のところ手を出す気がないらしい。さて、この「衝撃波」で両端の攻めをどれだけ弱められるかな。",
+    "spoken_file": "spoken/034.wav",
+    "last_action": 412.9209999999998,
+    "inputs": [
+      {
+        "at": 412.9209999999998,
+        "command": "hover 690 649"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 690 649",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 409.71499999999986
+  },
+  {
+    "decided_at": 421.7649999999999,
+    "thinking_at": 413.9369999999999,
+    "at": 416.8143333333332,
+    "text": "「衝撃波」で三匹とも脱力し、こちらの刃も通りやすくなる。",
+    "original_text": "「衝撃波」で三匹とも脱力し、こちらの刃も通りやすくなる。私の勘定では、左の八は六になるはずだ。試してみよう。",
+    "spoken_file": "spoken/035.wav",
+    "last_action": 424.8899999999999,
+    "inputs": [
+      {
+        "at": 424.8899999999999,
+        "command": "drag 695 551 687 330"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 695 551 687 330",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 421.46499999999986
+  },
+  {
+    "decided_at": 435.6709999999998,
+    "thinking_at": 428.0149999999999,
+    "at": 432.6936666666665,
+    "text": "さて、真ん中の虫の体力は十。",
+    "original_text": "さて、真ん中の虫の体力は十。眼鏡の下半分で「三日月の槍」の細かい字を読もう。弱った相手なら、この一突きで届くかな。",
+    "spoken_file": "spoken/036.wav",
+    "last_action": 438.5459999999998,
+    "inputs": [
+      {
+        "at": 438.5459999999998,
+        "command": "hover 383 663"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 383 663",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 435.3709999999998
+  },
+  {
+    "decided_at": 450.4369999999999,
+    "thinking_at": 439.65599999999995,
+    "at": 443.81166666666655,
+    "text": "真ん中を突くつもりだったが、右の虫は体力が十六で、七つの一撃を構えている。",
+    "original_text": "真ん中を突くつもりだったが、右の虫は体力が十六で、七つの一撃を構えている。槍の十五に弱体のぶんが乗るなら、右を先に取れそうだ。",
+    "spoken_file": "spoken/037.wav",
+    "last_action": 454.0459999999998,
+    "inputs": [
+      {
+        "at": 454.0459999999998,
+        "command": "drag 413 554 1092 416"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 413 554 1092 416",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 450.1369999999999
+  },
+  {
+    "decided_at": 464.6399999999999,
+    "thinking_at": 457.15599999999995,
+    "at": 460.95866666666655,
+    "text": "おや、槍の十五も殻を通れば九つか。",
+    "original_text": "おや、槍の十五も殻を通れば九つか。だが右の虫に残るのは七つ。ここで仕留めれば、左の六つは今の盾で受けきれるね。",
+    "spoken_file": "spoken/038.wav",
+    "last_action": 467.4209999999998,
+    "inputs": [
+      {
+        "at": 467.4209999999998,
+        "command": "drag 808 659 1091 419"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 808 659 1091 419",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 464.33999999999986
+  },
+  {
+    "decided_at": 477.828,
+    "thinking_at": 470.53099999999995,
+    "at": 475.8853333333333,
+    "text": "右の虫は片づいた。",
+    "original_text": "右の虫は片づいた。左の六つは盾の七つで受けきれる。「身の程を知れ」とは、私の手帳にも似合う題だね。どんな効き目かな。",
+    "spoken_file": "spoken/039.wav",
+    "last_action": 480.28099999999995,
+    "inputs": [
+      {
+        "at": 480.28099999999995,
+        "command": "hover 448 660"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 448 660",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 477.52799999999996
+  },
+  {
+    "decided_at": 490.953,
+    "thinking_at": 481.3119999999999,
+    "at": 488.349,
+    "text": "脱力と弱体を一つずつ足せる。",
+    "original_text": "脱力と弱体を一つずつ足せる。今の盾で六つは受けきれるが、次の巡りにも効くのがありがたい。左の虫に使っておこう。",
+    "spoken_file": "spoken/040.wav",
+    "last_action": 493.4839999999999,
+    "inputs": [
+      {
+        "at": 493.4839999999999,
+        "command": "drag 475 541 779 391"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 475 541 779 391",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 490.65299999999996
+  },
+  {
+    "decided_at": 504.125,
+    "thinking_at": 496.40599999999995,
+    "at": 501.3183333333333,
+    "text": "左の六つは、今ある盾で足りる。",
+    "original_text": "左の六つは、今ある盾で足りる。エナジーが一つ余ったね。「畏敬」とは、いったいどちらがどちらを敬うのかな。小さい字を読んでみよう。",
+    "spoken_file": "spoken/041.wav",
+    "last_action": 507.0,
+    "inputs": [
+      {
+        "at": 507.0,
+        "command": "hover 633 649"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "hover 633 649",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 503.825
+  },
+  {
+    "decided_at": 515.078,
+    "thinking_at": 508.03099999999995,
+    "at": 512.7406666666667,
+    "text": "「畏敬」で星が二つ。",
+    "original_text": "「畏敬」で星が二つ。今の一つと合わせて三つだ。盾をもう一枚重ねるより、次に粒子障壁を引いたときの用意をしておくのがよさそうだね。",
+    "spoken_file": "spoken/042.wav",
+    "last_action": 515.75,
+    "inputs": [
+      {
+        "at": 515.75,
+        "command": "drag 639 548 640 328"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "drag 639 548 640 328",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 514.778
+  },
+  {
+    "decided_at": 525.031,
+    "thinking_at": 518.6869999999999,
+    "at": 522.619,
+    "text": "星は三つ、財布は空。",
+    "original_text": "星は三つ、財布は空。左の虫が六つ打っても、盾は一つ余る勘定だ。さて、向こうの手を見よう。",
+    "spoken_file": "spoken/043.wav",
+    "last_action": 527.406,
+    "inputs": [
+      {
+        "at": 527.406,
+        "command": "click 1142 596"
+      }
+    ],
+    "planned_actions": [
+      {
+        "command": "click 1142 596",
+        "reason": ""
+      }
+    ],
+    "speech_finished_at": 524.731
+  },
+  {
+    "decided_at": 537.6089999999999,
+    "thinking_at": 530.3119999999999,
+    "at": 535.549,
+    "text": "盾がちょうど一つ残った。",
+    "original_text": "盾がちょうど一つ残った。手帳の勘定と実際が合うとは気分がいいね。さて、もう一匹は何をするかな。",
+    "spoken_file": "spoken/044.wav",
+    "last_action": 535.549,
+    "inputs": [],
+    "planned_actions": [],
+    "speech_finished_at": 537.309
+  }
+]

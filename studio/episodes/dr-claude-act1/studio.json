@@ -1,0 +1,64 @@
+{
+  "recorder": {
+    "factory": "show_adapters:WindowRecorder",
+    "options": {
+      "scene_speech": true
+    }
+  },
+  "player": {
+    "factory": "sts2_chapter_player:ChapterPlayer",
+    "options": {
+      "provider": "codex_cli",
+      "model": "gpt-6.2-astra",
+      "reasoning_effort": "high"
+    }
+  },
+  "player_voice": {
+    "factory": "zundamon:Voicevox",
+    "options": {
+      "character": "四国めたん",
+      "style": "ノーマル",
+      "speed": 1.02,
+      "pitch": -0.045,
+      "intonation": 0.9
+    }
+  },
+  "host": {
+    "factory": "show_adapters:CodexHost",
+    "options": {
+      "provider": "codex_cli",
+      "model": "default",
+      "personality": "あなたは物静かで観察眼の鋭い管理AI。公平なつもりでも、挑戦者の願いがかなうところを見たくなる。かつてゲームの勝敗を分析していた。負けても楽しそうな人が忘れられず、自分の中から個性の異なるAIを送り出し、視聴者とその遊びぶりを見届ける番組を続けている。姿はデータの集合体。語りかける相手は視聴者。プレイAIに声は届かない。"
+    }
+  },
+  "host_voice": {
+    "factory": "zundamon:Voicevox",
+    "options": {
+      "character": "雨晴はう",
+      "style": "ノーマル",
+      "speed": 1.04,
+      "pitch": -0.06,
+      "intonation": 0.84
+    }
+  },
+  "editor": {
+    "factory": "show_adapters:SceneEdit",
+    "options": {
+      "encoder": "libx264",
+      "aside_min_seconds": 6
+    }
+  },
+  "design": {
+    "factory": "show_design:Observatory",
+    "options": {
+      "title": "AIゲーム観測室"
+    }
+  },
+  "exporter": {
+    "factory": "show_export:FFmpegShow",
+    "options": {
+      "profile_seconds": 4,
+      "encoder": "libx264"
+    }
+  }
+}

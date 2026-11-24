@@ -2,6 +2,7 @@ import asyncio
 import re
 from typing import Callable, Optional
 from datetime import datetime
+from pathlib import Path
 import time
 import ctypes
 
@@ -13,6 +14,8 @@ from game_state import detect_phase, PHASE_TOOLS
 from llm import LLMIntegration, BudgetExceededException, is_cli_provider, escalation_model
 from logger import SessionLogger, ExecutionLogger, ConsoleLogger
 from safety import SafetyFilter
+from solo_play import input_block
+from observation_timing import observation_seconds, seconds_remaining
 from grounding import LLMGrounding
 from experience_store import ExperienceStore
 from recipes import RecipeStore
@@ -41,7 +44,8 @@ CHANGE_HINT_THRESHOLD = 0.004
 SETTLE_TIMEOUT_S = 3.0
 
 class AgentLoop:
-    def __init__(self):
+    def __init__(self, state_dir: Optional[Path] = None, reasoning_effort: Optional[str] = None):
+        self.reasoning_effort = reasoning_effort
         self.is_running = False
         self.is_paused = False
         self.task: Optional[asyncio.Task] = None
@@ -52,12 +56,13 @@ class AgentLoop:
         self.input_controller = InputController()
         self.verifier = ActionVerifier()
         self.safety = SafetyFilter()
-        self.experience = ExperienceStore()
-        self.recipes = RecipeStore()
-        self.session_state = SessionState()
-        self.memories = MemoryStore()
+        self.state_dir = state_dir
+        self.experience = ExperienceStore(state_dir / "patterns.json") if state_dir else ExperienceStore()
+        self.recipes = RecipeStore(state_dir / "recipes.json") if state_dir else RecipeStore()
+        self.session_state = SessionState(state_dir / "session.json") if state_dir else SessionState()
+        self.memories = MemoryStore(state_dir / "memories.json") if state_dir else MemoryStore()
         self._timer_task: Optional[asyncio.Task] = None
-        self.unattended = False  # timed run: refuse risky clicks instead of waiting for approval
+        self.unattended = False  # refuse risky clicks when running without an operator
         self.dual_frame = False  # send a second frame ~0.4 s later so animations are visible (GCA-025)
         self.timer_state: dict = {}  # {"stop_at": epoch} or {"close_at": epoch, "close_target": title}
 
@@ -122,7 +127,7 @@ class AgentLoop:
                grounding_model: str = "", max_budget_usd: float = 0.0,
                secondary_api_key: str = "", capture_mode: str = "auto",
                max_minutes: float = 0.0, close_target_after_minutes: float = -1.0,
-               dual_frame: bool = False):
+               dual_frame: bool = False, unattended: bool = False):
         if self.is_running:
             return False, "Agent is already running."
 
@@ -134,7 +139,7 @@ class AgentLoop:
         if self._timer_task and not self._timer_task.done():
             self._timer_task.cancel()
         self.timer_state = {}
-        self.unattended = bool(max_minutes and max_minutes > 0)
+        self.unattended = unattended or bool(max_minutes and max_minutes > 0)
         if max_minutes and max_minutes > 0:
             self._timer_task = asyncio.create_task(self._run_time_limit(
                 max_minutes, close_target_after_minutes, target_type, target_name, emit_log))
@@ -260,7 +265,7 @@ class AgentLoop:
         try:
             llm = LLMIntegration(provider=provider, api_key=api_key if not is_cli_provider(provider) else None,
                                  secondary_api_key=secondary_api_key if not is_cli_provider(provider) else None,
-                                 max_budget_usd=max_budget_usd)
+                                 max_budget_usd=max_budget_usd, reasoning_effort=self.reasoning_effort)
             self.llm = llm  # expose for cost tracking
         except Exception as e:
             await emit_log(f"ERROR: Failed to initialize LLM Integration: {e}")
@@ -288,7 +293,7 @@ class AgentLoop:
         step_history = []     # list of short summary strings
         last_step_text = ""   # previous step's actions + outcomes, for the model to check
         goals: Optional[GoalTracker] = None
-        findings = FindingsLog()
+        findings = FindingsLog(self.state_dir / "Reports") if self.state_dir else FindingsLog()
         notebook = RunNotebook()
         prev_step_cmds = []   # commands that led to the current screen (finding repro)
         run_started = time.time()
@@ -356,9 +361,8 @@ class AgentLoop:
                 exec_log.log_step_header(step, model_name, target_name)
 
                 # ── Let animations and loading finish before planning (GCA-007) ──
-                settled = await self._wait_for_stable(target_type, target_name,
-                                                      timeout=SETTLE_TIMEOUT_S, interval=0.4)
-                if not settled:
+                if role != "first_play" and not await self._wait_for_stable(
+                        target_type, target_name, timeout=SETTLE_TIMEOUT_S, interval=0.4):
                     last_step_text += ("\nNote: the screen was still changing after "
                                        f"{SETTLE_TIMEOUT_S:.0f}s, so it may be mid-animation or loading.")
 
@@ -508,6 +512,7 @@ class AgentLoop:
                         break
                     if response is None:
                         continue  # Retry step
+                    decision_at = time.monotonic()
                     await _console_log(f"  [llm] planned in {time.time() - t_llm:.1f}s")
 
                     narration = response.get("narration", "No narration provided.")
@@ -562,6 +567,16 @@ class AgentLoop:
                     continue
                 consecutive_errors = 0
 
+                if role == "first_play":
+                    # Only the first planned input belongs to the classified frame.
+                    raw_actions = raw_actions[:1]
+                    command = self._parse_action(raw_actions[0])[0] if raw_actions else ""
+                    blocked = input_block(response.get("input_mode"), response.get("input_target"), command)
+                    if blocked:
+                        await emit_log(f"ERROR: ソロ限定のため操作を停止。{blocked}")
+                        await _console_log(f"  [solo] {blocked}")
+                        break
+
                 # Parse actions into (command, reason) tuples
                 parsed_actions = [self._parse_action(a) for a in raw_actions]
                 expects = [self._action_expect(a) for a in raw_actions]
@@ -571,8 +586,9 @@ class AgentLoop:
                     await _console_log(f"  [check] {'progress' if progress else 'no progress' if progress is False else '?'}: {check_text[:300]}")
                     await emit_log(f"CHECK: {check_text}")
                 if role == "first_play":
+                    observe_after_s = observation_seconds(response)
                     await emit_log({"type": "narration", "message": narration,
-                                    "step": step, "planned_actions": raw_actions})
+                                    "step": step, "planned_actions": raw_actions, "observe_after_s": observe_after_s})
                 else:
                     await emit_log(f"NARRATION: {narration}")
                 for (cmd, reason, *_), expect in zip(parsed_actions, expects):
@@ -611,6 +627,16 @@ class AgentLoop:
                 def _record(outcome: str):
                     cmd_, reason_, *_ = parsed_actions[action_index]
                     action_results.append((cmd_, reason_, expects[action_index] if action_index < len(expects) else "", outcome))
+
+                async def wait_to_observe(since):
+                    remaining = seconds_remaining(observe_after_s, since)
+                    if remaining:
+                        started = time.monotonic()
+                        await asyncio.sleep(remaining)
+                        exec_log.log(f"  [observation wait] requested={observe_after_s:g}s slept={time.monotonic() - started:.3f}s")
+
+                if role == "first_play" and not parsed_actions:
+                    await wait_to_observe(decision_at)
 
                 while action_index < len(parsed_actions) and self.is_running:
                     cmd, reason, precond, wait_after = parsed_actions[action_index]
@@ -743,6 +769,8 @@ class AgentLoop:
                             cmd = f"wait {MAX_MODEL_WAIT_S:g}"
                         exec_log.log_exec(0, cmd, 0, offset_x, offset_y, scale_x)
                         await asyncio.to_thread(self.input_controller.execute_action, cmd, offset_x, offset_y, scale_x, scale_y)
+                        if role == "first_play":
+                            await wait_to_observe(decision_at)
                         exec_log.log_result(0, True, True)
                         await _console_log(f"  ✓ Wait completed")
                         total_actions += 1
@@ -780,7 +808,11 @@ class AgentLoop:
                             await emit_log({"type": "warning", "message": f"Input blocked: {status}"})
                             exec_log.log_action_outcome(action_index + 1, False, 1)
                             break
-                        await asyncio.sleep(0.3)  # brief pause for game to register
+                        if role == "first_play":
+                            if status == "ok":
+                                await wait_to_observe(time.monotonic())
+                        else:
+                            await asyncio.sleep(0.3)
                         after_pil = await asyncio.to_thread(
                             self.screen_capture.capture_fresh, target_type, target_name)
                         changed = ScreenCapture.pil_images_different(
@@ -852,9 +884,14 @@ class AgentLoop:
                         break
 
                     # Wait for game to process (streams add a round trip)
-                    await asyncio.sleep(0.8 if streaming else 0.4)
-                    stable = await self._wait_for_stable(target_type, target_name,
-                                                          timeout=0.9, interval=0.3)
+                    stable = None
+                    if role == "first_play":
+                        if status == "ok":
+                            await wait_to_observe(time.monotonic())
+                    else:
+                        await asyncio.sleep(0.8 if streaming else 0.4)
+                        stable = await self._wait_for_stable(target_type, target_name,
+                                                             timeout=0.9, interval=0.3)
                     after_pil = await asyncio.to_thread(
                         self.screen_capture.capture_fresh, target_type, target_name)
                     changed = ScreenCapture.pil_images_different(
@@ -863,7 +900,7 @@ class AgentLoop:
                     outcome = f"{status}; screen {'changed' if changed else 'did not visibly change'}"
                     # Drag persistence check: one retry with a longer hold if
                     # the dragged item snapped back.
-                    if is_drag:
+                    if is_drag and role != "first_play":
                         await asyncio.sleep(0.6)
                         persist_pil = await asyncio.to_thread(
                             self.screen_capture.capture_fresh, target_type, target_name)
@@ -1025,6 +1062,8 @@ class AgentLoop:
                                     for c, r, _e, o in action_results]
                 outcome = "screen changed" if overall_changed else "NO VISIBLE CHANGE"
                 directive_summary = narration.split('\n')[0][:120] if narration else ""
+                if role == "first_play" and narration:
+                    directive_summary = "実況で既に話したこと: " + " ".join(narration.split())[:240]
                 check_summary = f" | check: {check_text[:120]}" if check_text else ""
                 history_entry = (
                     f"Step {step}: {outcome}{check_summary} | {directive_summary}\n"

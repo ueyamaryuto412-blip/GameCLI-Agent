@@ -1,0 +1,412 @@
+{
+  "schema": 1,
+  "checked_at": "2026-11-23T03:16:34+00:00",
+  "brief": "AIが人間らしく迷ったり、自分で選んだことを面白がったりするゲーム実況。ゲームのファンにも、そのゲームを初めて見る視聴者にも、選択と結果が画面で伝わる回。",
+  "games": [
+    {
+      "id": "2868840",
+      "title": "Slay the Spire 2",
+      "discovery": [
+        "収録プロフィール",
+        "https://store.steampowered.com/search/results/?tags=1091588&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/2868840/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=2868840&cc=jp&l=japanese",
+      "description": "あの象徴的なデッキ構築型ローグライクが帰ってきた。Slay the Spire 2をプレイして、ユニークなデッキを構築し、奇怪な生物たちと出会い、圧倒的な力を秘めたレリックを発見しよう！",
+      "genres": [
+        "インディー",
+        "ストラテジー",
+        "早期アクセス"
+      ],
+      "steam_recommendations": 218997,
+      "profile": "sts2",
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=Slay+the+Spire+2+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "【コメ付き】A10 トリックショットで『爆発矢』が覚醒するフール！？【Slay the Spire 2】",
+            "url": "https://www.youtube.com/watch?v=PdccSB4-bVQ",
+            "views_display": "52,631回視聴",
+            "published_display": "14 時間前"
+          },
+          {
+            "title": "【Slay the Spire 2】刻印豊穣が過去一面白い【アイアンクラッドA10】【スレスパ2】",
+            "url": "https://www.youtube.com/watch?v=6iM_f2Aorlk",
+            "views_display": "6,186回視聴",
+            "published_display": "19 時間前"
+          },
+          {
+            "title": "【コメ付き】超鬼畜難易度『ドレッド』モードでもジャグリングで俺と戦え！【Slay the Spire 2】",
+            "url": "https://www.youtube.com/watch?v=Ep8LCKKgd-g",
+            "views_display": "89,243回視聴",
+            "published_display": "3 日前"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2459550",
+      "title": "Emberward",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1091588&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/2459550/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=2459550&cc=jp&l=japanese",
+      "description": "戦術を駆使し、命の炎を守り切れ！ 『Emberward』は、迷路作りと特殊なタワーメカニックを基点としたローグライト・タワーディフェンスゲームです。",
+      "genres": [
+        "インディー",
+        "ストラテジー",
+        "無料プレイ"
+      ],
+      "steam_recommendations": 4514,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=Emberward+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "＃01【Emberward:エンバーウォード】『祝・正式リリース』プレイすると1日が終わるゲーム!?迷路構築型のローグライトTDを最初から遊んでいくよ！【実況】",
+            "url": "https://www.youtube.com/watch?v=6U-wB5jPN5U",
+            "views_display": "11,899回視聴",
+            "published_display": "2 か月前 に配信済み"
+          },
+          {
+            "title": "【ゆっくり実況】Emberward（エンバーワード）　ローグライクタワーディフェンス！圧倒的に好評！！",
+            "url": "https://www.youtube.com/watch?v=_7VA9sgdr_I",
+            "views_display": "2,330回視聴",
+            "published_display": "2 年前"
+          },
+          {
+            "title": "テトリスみたいに壁を組み合わせて敵をはね返すタワーディフェンス『 Emberward 』",
+            "url": "https://www.youtube.com/watch?v=DkBZ3xVXcxs",
+            "views_display": "710,910回視聴",
+            "published_display": "2 年前"
+          }
+        ]
+      }
+    },
+    {
+      "id": "3103620",
+      "title": "Witch the Showdown",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1091588&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/3103620/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=3103620&cc=jp&l=japanese",
+      "description": "パリィ×デッキ構築×ボスラッシュの死にゲーアクション！ 『Witch the Showdown』はボスのみと戦っていく、パリィでマナを貯めて、リアルタイムでカードを使って攻撃するバトルシステムが特徴の、高難易度パリィアクションゲームです！",
+      "genres": [
+        "アクション",
+        "インディー",
+        "早期アクセス"
+      ],
+      "steam_recommendations": null,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=Witch+the+Showdown+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "【Witch the Showdown】個人的今年No1の神ゲーを先行試遊レビュー！全ボス最高難易度をSランククリアするまで夢中でやり込んじゃった！【パリィ×デッキ構築】【東和正】",
+            "url": "https://www.youtube.com/watch?v=mTy93zRCaew",
+            "views_display": "7,013回視聴",
+            "published_display": "4 日前"
+          },
+          {
+            "title": "【Witch the Showdown】パリィとデッキ構築を融合させた超高難易度リアルタイムアクション【体験版】",
+            "url": "https://www.youtube.com/watch?v=kK7G6sQ8C4w",
+            "views_display": "6,240回視聴",
+            "published_display": "4 日前"
+          },
+          {
+            "title": "【 Witch the Showdown 】爽快なパリィ×デッキ構築バトル！何度でも挑戦したくなるソウルライクを遊ぶ！【 インディーゲーム 】",
+            "url": "https://www.youtube.com/watch?v=GO2sI8QrFIs",
+            "views_display": "486回視聴",
+            "published_display": "2 日前 に配信済み"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2483700",
+      "title": "HARMA 亡国のエデン",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1091588&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/2483700/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=2483700&cc=jp&l=japanese",
+      "description": "「HARMA 亡国のエデン」は、ストーリーモードを備えたダークファンタジーローグライクデッキ構築ゲームです。堕落した騎士団、燃え盛る王国、そして消えた国王……。この悲劇の裏に潜む真実を探さねばなりません。",
+      "genres": [
+        "インディー",
+        "ストラテジー",
+        "早期アクセス"
+      ],
+      "steam_recommendations": 182,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=HARMA+%E4%BA%A1%E5%9B%BD%E3%81%AE%E3%82%A8%E3%83%87%E3%83%B3+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "no_title_match",
+        "videos": []
+      }
+    },
+    {
+      "id": "3432860",
+      "title": "病能探偵",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1664&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/3432860/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=3432860&cc=jp&l=japanese",
+      "description": "認知異常により歪められた殺人現場で真実を探れ。『病能探偵』は、認知異常×本格ミステリーのデスゲーム推理アドベンチャー。 嘘がつけない、左半分が見えない、顔が識別できない—— 異常なルールを乗り越え、真犯人を暴き出せ。",
+      "genres": [
+        "アドベンチャー",
+        "インディー"
+      ],
+      "steam_recommendations": 2327,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=%E7%97%85%E8%83%BD%E6%8E%A2%E5%81%B5+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "【製品版】13人の奇病患者達によるデスゲーム、「病能」を活かした想像を絶する\"殺人トリック\"を推理して犯人を処刑せよ【病能探偵】",
+            "url": "https://www.youtube.com/watch?v=_csu02Sjc0U",
+            "views_display": "32,832回視聴",
+            "published_display": "6 日前"
+          },
+          {
+            "title": "#3【 病能探偵 】完全初見！もう誰も死なないで… ※ネタバレあり【#迷狗ろん】",
+            "url": "https://www.youtube.com/watch?v=Pz0Ybl_AZQg",
+            "views_display": "2,069回視聴",
+            "published_display": "8 時間前 に配信済み"
+          },
+          {
+            "title": "【ゲーム実況】病能探偵 第4章 ネタバレ注意【やたる】",
+            "url": "https://www.youtube.com/watch?v=_DsK4-OxkgM",
+            "views_display": "861回視聴",
+            "published_display": "16 時間前 に配信済み"
+          }
+        ]
+      }
+    },
+    {
+      "id": "753640",
+      "title": "Outer Wilds",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1664&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/753640/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=753640&cc=jp&l=japanese",
+      "description": "Giant Bomb、Polygon、Eurogamer、The Guardianにゲームオブザイヤー2019の候補として選ばれたOuter Wildsは、終わりのないタイムループに囚われた恒星系で繰り広げられるオープンワールドミステリーで、高い評価を獲得し、賞を受賞しました。",
+      "genres": [
+        "アクション",
+        "アドベンチャー"
+      ],
+      "steam_recommendations": 91658,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=Outer+Wilds+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "no_title_match",
+        "videos": []
+      }
+    },
+    {
+      "id": "499170",
+      "title": "Order of the Sinking Star",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1664&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/499170/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=499170&cc=jp&l=japanese",
+      "description": "『Braid』『The Witness』のディレクター、Jonathan Blowが贈る『Order of the Sinking Star』は、魔法と謎に満ちた世界を舞台にした物語型アドベンチャー。1000を超える手作りのパズルを解き、個性豊かなプレイアブルキャラクターを発見し、進化していく数々のゲームメカニクスを習得しながら、世界に隠された大いなる謎を読み解いていく。",
+      "genres": [
+        "アドベンチャー",
+        "インディー",
+        "ストラテジー"
+      ],
+      "steam_recommendations": 4074,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=Order+of+the+Sinking+Star+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "no_title_match",
+        "videos": []
+      }
+    },
+    {
+      "id": "3208930",
+      "title": "ガルバテイン：冒険者ギルド事務所",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1664&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/3208930/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=3208930&cc=jp&l=japanese",
+      "description": "「こんにちは、冒険者さん。今日はどんなクエストを解決しましたか？」 王道ファンタジーのギルド受付シミュレーション『ガルバテイン：冒険者ギルド事務所』",
+      "genres": [
+        "カジュアル",
+        "インディー",
+        "シミュレーション",
+        "早期アクセス"
+      ],
+      "steam_recommendations": 851,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=%E3%82%AC%E3%83%AB%E3%83%90%E3%83%86%E3%82%A4%E3%83%B3%EF%BC%9A%E5%86%92%E9%99%BA%E8%80%85%E3%82%AE%E3%83%AB%E3%83%89%E4%BA%8B%E5%8B%99%E6%89%80+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "【ガルバテイン】冒険者ギルド事務所で働きます。",
+            "url": "https://www.youtube.com/watch?v=GPkyHtmZIpU",
+            "views_display": "12回視聴",
+            "published_display": "14 時間前 に配信済み"
+          },
+          {
+            "title": "大陸１を目指せ！YOUTUBE支部始動！【ガルバテイン冒険者ギルド事務所】",
+            "url": "https://www.youtube.com/watch?v=FBhroyyMogo",
+            "views_display": "481回視聴",
+            "published_display": "1 か月前"
+          },
+          {
+            "title": "冒険家が提示する成果報告をよく見て、正しくクエストが成功したのかを判断して報酬を支払う、PapersPleaseライクのギルド受付ゲーム【ガルバテイン：冒険者ギルド事務所】（単発）",
+            "url": "https://www.youtube.com/watch?v=IPDMPO0A4tg",
+            "views_display": "34,274回視聴",
+            "published_display": "1 年前"
+          }
+        ]
+      }
+    },
+    {
+      "id": "3259780",
+      "title": "ファイナルファンタジー レゾナンス",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1677&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/3259780/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=3259780&cc=jp&l=japanese",
+      "description": "もし、「ファイナルファンタジー」がドットのまま進化を遂げていたら——。 をコンセプトに新たなドット表現で描かれる、「ファイナルファンタジー」シリーズ最新作。 《クリスタル》を巡る物語、ターン制コマンドバトルやアビリティの付け替えなどシリーズおなじみの要素に加え、豊富なやりこみ要素も数多く収録されている。",
+      "genres": [
+        "RPG"
+      ],
+      "steam_recommendations": 6671,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=%E3%83%95%E3%82%A1%E3%82%A4%E3%83%8A%E3%83%AB%E3%83%95%E3%82%A1%E3%83%B3%E3%82%BF%E3%82%B8%E3%83%BC+%E3%83%AC%E3%82%BE%E3%83%8A%E3%83%B3%E3%82%B9+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "#1【ファイナルファンタジー レゾナンス】FF最新作 FFが好きなほど楽しい!?『FINAL FANTASY RESONANCE』を一章まるごと遊べちゃう体験版を初見プレイ【PS5】",
+            "url": "https://www.youtube.com/watch?v=fdDD16pghhY",
+            "views_display": "168,976回視聴",
+            "published_display": "1 か月前 に配信済み"
+          },
+          {
+            "title": "【ファイナルファンタジーレゾナンス】完全初見！ドット初！全部初！＃01【FINAL FANTASY RESONANCE】",
+            "url": "https://www.youtube.com/watch?v=NcgNw3Gj7G0",
+            "views_display": "4,134回視聴",
+            "published_display": "4 日前 に配信済み"
+          },
+          {
+            "title": "【ファイナルファンタジー レゾナンス】 メインストーリー動画 【観るゲーム】 日本語音声/日本語字幕 4K PC版 最高画質 FFRS Final Fantasy Resonance",
+            "url": "https://www.youtube.com/watch?v=uh1caxWiCkw",
+            "views_display": "53,342回視聴",
+            "published_display": "4 週間前"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2455640",
+      "title": "ロマンシング サガ2 リベンジオブザセブン",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1677&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/2455640/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=2455640&cc=jp&l=japanese",
+      "description": "『ロマンシング サガ2』のフルリメイク！グラフィックは3D化、ゲームシステムは現代風にアレンジ、BGMアレンジ、ボイス対応。プレイヤーは歴代皇帝として、七英雄との数千年にわたる戦いに挑みます。",
+      "genres": [
+        "RPG"
+      ],
+      "steam_recommendations": 4112,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=%E3%83%AD%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%B3%E3%82%B0+%E3%82%B5%E3%82%AC2+%E3%83%AA%E3%83%99%E3%83%B3%E3%82%B8%E3%82%AA%E3%83%96%E3%82%B6%E3%82%BB%E3%83%96%E3%83%B3+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "no_title_match",
+        "videos": []
+      }
+    },
+    {
+      "id": "2499860",
+      "title": "ドラゴンクエストVII Reimagined",
+      "discovery": [
+        "https://store.steampowered.com/search/results/?tags=1677&filter=topsellers&category1=998&category3=2&os=win&infinite=1&start=0&count=4&cc=jp&l=japanese"
+      ],
+      "store_url": "https://store.steampowered.com/app/2499860/",
+      "store_data_url": "https://store.steampowered.com/api/appdetails?appids=2499860&cc=jp&l=japanese",
+      "description": "「海のむこうには　もっと広い世界がある　……オレたちが　証明するんだ！」 はじまりは孤島に住む少年少女たちの小さな好奇心。海を越え、時を超える大冒険が今、始まる。 原作の魅力はそのままに、遊びやすく\"Reimagined（再構築）\"。ドールルックに生まれ変わった仲間たちと、壮大な冒険へ出発しよう！",
+      "genres": [
+        "アドベンチャー",
+        "RPG"
+      ],
+      "steam_recommendations": 2244,
+      "profile": null,
+      "audience": {
+        "search_url": "https://www.youtube.com/results?search_query=%E3%83%89%E3%83%A9%E3%82%B4%E3%83%B3%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88VII+Reimagined+%E5%AE%9F%E6%B3%81&hl=ja&gl=JP",
+        "status": "sampled",
+        "videos": [
+          {
+            "title": "＃１２【ドラクエ7】完全初見！伝説のRPGを実況プレイ！【ドラゴンクエストVII Reimagined/えるいおーに軍曹/新人Vtuber/ライブ配信】",
+            "url": "https://www.youtube.com/watch?v=pKbgupRhf8Q",
+            "views_display": "721回視聴",
+            "published_display": "17 時間前 に配信済み"
+          },
+          {
+            "title": "【DQ７】＃６　レベル上げようぜ【ドラゴンクエストVII Reimagined】",
+            "url": "https://www.youtube.com/watch?v=FRxTwhe4WVQ",
+            "views_display": "404回視聴",
+            "published_display": "3 時間前 に配信済み"
+          },
+          {
+            "title": "#14【ドラゴンクエストVII Reimagined】ラスボスなの？神なの！？ドラクエ7リメイクリイマジンド【#海月シェル /vtuber 】",
+            "url": "https://www.youtube.com/watch?v=neaukbrFV0A",
+            "views_display": "1,305回視聴",
+            "published_display": "14 時間前 に配信済み"
+          }
+        ]
+      }
+    }
+  ],
+  "picks": [
+    {
+      "game_id": "2868840",
+      "name": "ミナト",
+      "persona": "元自転車整備士で、手持ちの部品が思いがけずかみ合う瞬間が好きだ。迷ったら次の戦闘を乗り切れるかを先に考え、余裕があるときは単体で強い札より、すでに持っている札に新しい使い道を作る一枚を選ぶ。",
+      "decision": "カード報酬に、今すぐ火力を足せる攻撃札と、手持ちの札と組み合わせると強い一枚が並んだら、どちらを取るか。現在の体力と直前の戦闘で火力が足りたかを振り返り、余裕があれば組み合わせを試したくなりそうだ。",
+      "fit": "1位。Slay the Spire 2はターン制で、AIが手札と敵の行動予告を読み、一手ずつ選べる。初見には選んだ札と直後のダメージや防御の変化を、ファンには報酬で拾った札が後の戦闘でどう働くかを見せられる。候補中で唯一、収録プロフィール（sts2）がある。Steam推薦は218,997件。YouTubeの検索3例は6,186〜89,243回視聴で、高難度やカードの組み合わせを扱う実況が確認できる。",
+      "risk": "カード効果や状態の説明が重なると、初見には何が効いたのか見えにくい。報酬で迷った二枚と、採用した札が実際に働いたターンを編集でつなぐ。",
+      "format": "単発",
+      "unit": "開始からクリアまたは敗北までの1ラン。序盤に選んだ札の価値が戦闘を重ねるうちに変わるので、選択とその結果を1本の中で追える。"
+    },
+    {
+      "game_id": "2459550",
+      "name": "ナギ",
+      "persona": "元遊園地の誘導係で、曲がり角ひとつで人の流れが変わるのを見るのが好きだ。迷ったらまず命の炎の手前で敵を食い止められるかを考え、安全に余裕があれば、同じ塔の前を敵が二度通るような配置を試したい。",
+      "decision": "壁で敵の通路をもう一折り延ばすか、今の経路のまま曲がり角に塔を置くか。前のウェーブで敵が炎の近くまで来ていたら塔を急ぎ、余裕があれば遠回りさせる形を試しそうだ。",
+      "fit": "2位。Emberwardは壁で迷路を作るローグライト型タワーディフェンス。配置前後の経路と、ウェーブ中に敵がどこまで進んだかで、初見にも判断の結果が伝わる。ファンには経路と塔の射程をどう重ねるかが見どころになる。配置を一手ずつ考える場面はAI向きだが、収録プロフィールがあり戦闘中もターン制の1位を優先した。Steam推薦は4,514件。YouTubeの検索3例は2,330〜710,910回視聴で、迷路作りを前面に出した実況例がある。収録プロフィールは資料上未登録。",
+      "risk": "壁の向きや設置マスを読み違えると、意図した経路にならない。ウェーブ中は盤面が動くため、配置直後の経路と、敵が曲がり角を通る場面を画面で押さえる。",
+      "format": "単発",
+      "unit": "開始からクリアまたは敗北までの1ラン。配置とウェーブの答え合わせを残し、炎を守るために迷路の作り方がどう変わったかを1本で見せる。"
+    },
+    {
+      "game_id": "3208930",
+      "name": "フミ",
+      "persona": "元商店街の会計係で、慣れない人の説明にも耳を傾けたいが、常連にも新人にも同じ基準で報酬を出したい。迷ったらまず依頼の達成条件と提出された証拠を照らし合わせ、判断を左右する食い違いが残るなら支払いを見送る。",
+      "decision": "冒険者の報告がおおむね依頼に沿っていても、達成条件に関わる一点を提出物から確認できないとき、成功と認めて報酬を払うか、支払いを見送るか。話に筋が通っているほど助けたくなるが、最後はその一点が条件を満たす証拠になるかで決めそうだ。",
+      "fit": "3位。ガルバテイン：冒険者ギルド事務所では、依頼と成果報告を見比べ、成功と認めて報酬を払うか判断する。AIの迷いを画面にある文言に結びつけやすく、初見は支払いの根拠を追え、ファンも同じ資料から自分ならどう裁くか考えられる。上位2作より判断の根拠が文字に集中するため3位。Steam推薦は851件。YouTubeの検索3例は12〜34,274回視聴で、成果報告の審査を扱う単発例もある。収録プロフィールは資料上未登録。",
+      "risk": "小さな文字や読み落としで、受付係の方針と単なる誤読の区別がつきにくくなる。判断に使った依頼条件と提出内容を拡大し、決裁の直前に並べて見せる。",
+      "format": "シリーズ",
+      "unit": "1本につき受付の1勤務を目安に、最後に取り上げた案件の決裁まで収める。各回で判断の結果まで見せつつ、別の勤務でも同じ基準を通せるかを追う。"
+    }
+  ],
+  "notes": [
+    "Steam 3681610 は発売済みWindowsソロゲームの対象外。"
+  ]
+}

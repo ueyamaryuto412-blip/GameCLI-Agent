@@ -1,0 +1,20 @@
+{
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "device": "cpu",
+  "reference_sha256": "d2894ec82014be8133c30872c0af41e98adb0c001963d1bdaca0189fdfa8d4ae",
+  "setup_seconds": 1.667738099997223,
+  "takes": [
+    {
+      "file": "clone-sword.wav",
+      "text": "おや、ビッグバンから剣が出た。",
+      "audio_seconds": 2.88,
+      "generation_seconds": 12.649891699998989
+    },
+    {
+      "file": "clone-count.wav",
+      "text": "私の勘定では、左の八は六になるはずだ。試してみよう。",
+      "audio_seconds": 4.8,
+      "generation_seconds": 19.738486199999898
+    }
+  ]
+}

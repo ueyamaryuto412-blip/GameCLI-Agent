@@ -1,0 +1,27 @@
+{
+  "discovery": {
+    "factory": "research_sources:LocalCatalog",
+    "options": {
+      "games": [{
+        "id": "python-turtle-nim",
+        "title": "Nim (Python turtle)",
+        "description": "3列の棒をコンピュータと交互に取る石取りゲーム。1回に1列から1本以上取り、最後の棒を取った方が勝つ。",
+        "store_url": "https://github.com/python/cpython/blob/3.12/Lib/turtledemo/nim.py"
+      }]
+    }
+  },
+  "audience": {"factory": "research_sources:YouTubeExamples"},
+  "casting": {"factory": "research:EpisodeCasting"},
+  "preparation": {
+    "factory": "episode_preparation:VisualPreparation",
+    "options": {
+      "local_launchers": {
+        "python-turtle-nim": {
+          "window": "Python Turtle Graphics",
+          "process": "pythonw.exe",
+          "argv": [".venv/Scripts/pythonw.exe", "-m", "turtledemo.nim"]
+        }
+      }
+    }
+  }
+}

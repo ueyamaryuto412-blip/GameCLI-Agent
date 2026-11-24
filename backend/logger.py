@@ -103,9 +103,9 @@ class ExecutionLogger:
             pass
         self.log(f"  [exec] attempt={attempt}  settle={settle:.2f}s  cmd={cmd}{screen_info}")
 
-    def log_result(self, attempt: int, changed: bool, stable: bool):
+    def log_result(self, attempt: int, changed: bool, stable: bool | None):
         status = "CHANGED" if changed else "UNCHANGED"
-        stab = "stable" if stable else "still-animating"
+        stab = "" if stable is None else ("stable" if stable else "still-animating")
         self.log(f"  [result] attempt={attempt}  screen={status}  {stab}")
 
     def log_action_outcome(self, index: int, succeeded: bool, attempts: int):

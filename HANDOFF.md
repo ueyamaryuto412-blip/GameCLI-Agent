@@ -21,7 +21,9 @@
 .\.venv\Scripts\python.exe backend/produce.py --proposal episodes/research/20261125-000329-franklin-voice/shortlist.json --from-recording recordings/franklin-trial-20261124-195630
 ```
 
-同じ番組フォルダーで `--resume` すると、`player-audio/` の生成済みWAVを同じ声設定・台詞に再利用する。配役は `studio/default.json` のコピーで `player_voice.options.voice` を変更し、`--studio` で渡せる。作成済みのカスタム声ID（`voice_...`）も指定できる。[Geminiの音声仕様](https://aistudio.google.com/docs/speech-generation) · [Vertex AIの音声仕様](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/text-to-speech/overview)
+新しい企画には偉人ごとに基準の声が3案ある。試聴例は[フランクリンの配役表](episodes/research/franklin-gemini-cast/voices.md)。推薦1位で進めるか、`run_episode.py --shortlist <shortlist.json> --voice-pick 2` のように番号で選べる。既存素材の編集でも `produce.py --proposal` と `--voice-pick` を併用できる。
+
+プレイAIは収録中に台詞と任意の演技指示 `delivery` を返す。編集時にGeminiへ基準の声とその一言の指示を渡す。以前の収録は基準の口調で読む。同じ番組フォルダーで `--resume` すると、声設定・台詞・口調が一致するWAVを再利用する。`--studio` から作成済みのカスタム声ID（`voice_...`）も指定できる。[Geminiの音声仕様](https://aistudio.google.com/docs/speech-generation) · [Vertex AIの音声仕様](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/text-to-speech/overview)
 
 ## Qwenの比較音源とローカル試聴
 

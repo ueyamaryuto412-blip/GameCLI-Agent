@@ -9,6 +9,7 @@ from pathlib import Path
 
 from show_adapters import FirstPlay
 from llm import LLMIntegration
+from voice_casting import DELIVERY_PROMPT
 
 
 def chapter_result(game):
@@ -57,7 +58,7 @@ class ChapterPlayer(FirstPlay):
             image = folder / f"step-{step:04d}.jpg"
             frame.save(image, quality=90)
             await event("THINKING: " + str(step))
-            prompt = instructions + "\n" + protocol + "\n今回の自分の発言と操作：" + json.dumps(history[-18:], ensure_ascii=False)
+            prompt = instructions + "\n" + protocol + "\n" + DELIVERY_PROMPT + "\n今回の自分の発言と操作：" + json.dumps(history[-18:], ensure_ascii=False)
             if step == 1:
                 prompt += "\nいまタイトル画面でプレイAIの出番が始まりました。視聴者に挨拶してから始めてください。"
             if result:
@@ -75,7 +76,7 @@ class ChapterPlayer(FirstPlay):
             actions = reply["actions"] if not result and reply.get("mode") == "solo" else []
             with (folder / "decisions.jsonl").open("a", encoding="utf8") as trace:
                 trace.write(json.dumps(dict(step=step, reply=reply, game=changes, result=result), ensure_ascii=False) + "\n")
-            await event(dict(type="narration", message=reply["speech"], planned_actions=[dict(command=c, reason="") for c in actions],
+            await event(dict(type="narration", message=reply["speech"], delivery=reply.get("delivery", ""), planned_actions=[dict(command=c, reason="") for c in actions],
                              greeting=step == 1 or bool(result)))
             if result:
                 await event("STATUS: All goals done — " + result)

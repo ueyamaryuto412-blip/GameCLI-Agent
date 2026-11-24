@@ -8,6 +8,7 @@ import tempfile
 import time
 from pathlib import Path
 from solo_play import MODES, MODE_PROMPT
+from voice_casting import DELIVERY_PROMPT
 from observation_timing import TIMING_PROMPT, with_observation_timing
 
 try:
@@ -480,9 +481,9 @@ STEP_SCHEMA = {
 }
 FIRST_PLAY_SCHEMA = with_observation_timing({
     **STEP_SCHEMA,
-    "properties": {**STEP_SCHEMA["properties"], "input_mode": {"type": "string", "enum": list(MODES)},
+    "properties": {**STEP_SCHEMA["properties"], "delivery": {"type": "string"}, "input_mode": {"type": "string", "enum": list(MODES)},
                    "input_target": {"type": "string"}},
-    "required": [*STEP_SCHEMA["required"], "input_mode", "input_target"],
+    "required": [*STEP_SCHEMA["required"], "input_mode", "input_target", "delivery"],
 })
 DEFAULT_PRICING = (1.00, 3.00)  # conservative fallback
 
@@ -1189,7 +1190,7 @@ class LLMIntegration:
         schema = STEP_SCHEMA
         if role == "first_play":
             prompt_template = prompt_template.replace(QA_WAIT_GUIDANCE, TIMING_PROMPT)
-            prompt_template += "\n" + MODE_PROMPT
+            prompt_template += "\n" + MODE_PROMPT + "\n" + DELIVERY_PROMPT
             schema = FIRST_PLAY_SCHEMA
         narration_format = ("この場で自分から出た実況を日本語で。"
                             if role == "first_play" else

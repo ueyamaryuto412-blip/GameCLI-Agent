@@ -58,7 +58,8 @@ def test_unconfirmed_end_keeps_source_and_does_not_export(tmp_path, monkeypatch)
     assert not produce.read_json(tmp_path / "ending.json")["confirmed"]
 
 
-def test_selected_person_uses_first_ranked_gemini_voice_for_edit(tmp_path, monkeypatch):
+@pytest.mark.parametrize("rank, expected", [(None, "Orus"), (2, "Algenib")])
+def test_selected_person_uses_ranked_gemini_voice_for_edit(tmp_path, monkeypatch, rank, expected):
     data = report()
     cast = dict(engine="gemini", source_title="資料", source_url="https://example.org/source", evidence="本人の著作",
                 interpretation="声の高さは推定", candidates=[
@@ -75,11 +76,11 @@ def test_selected_person_uses_first_ranked_gemini_voice_for_edit(tmp_path, monke
     monkeypatch.setattr(run_episode, "record_source", lambda job, ep, studio, *_: recorded.append(studio))
     monkeypatch.setattr(run_episode, "produce", lambda *args, **kwargs: None)
     studio = produce.read_json(produce.DEFAULT_STUDIO)
-    run_episode.run_episode(tmp_path, data, studio, {"factory": "test"})
+    run_episode.run_episode(tmp_path, data, studio, {"factory": "test"}, voice_pick=rank)
     saved = produce.read_json(tmp_path / "production.json")
     assert saved["studio"] == recorded[0]
     assert recorded[0]["player_speech_stage"] == "post"
-    assert recorded[0]["player_voice"]["options"]["voice"] == "Orus"
+    assert recorded[0]["player_voice"]["options"]["voice"] == expected
     assert cast["interpretation"] in recorded[0]["player_voice"]["options"]["style"]
     assert saved["proposal"]["voice_cast"] == cast
     assert recorded[0]["host_voice"] == studio["host_voice"]

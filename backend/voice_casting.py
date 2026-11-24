@@ -13,6 +13,10 @@ GEMINI_VOICES = {"Algenib": "少しかすれた響き", "Gacrux": "成熟した�
                  "Orus": "芯がある", "Enceladus": "息を含む", "Iapetus": "明瞭",
                  "Sulafat": "温かい", "Achernar": "柔らかい", "Puck": "軽快", "Kore": "きっぱり"}
 
+DELIVERY_PROMPT = ('台詞と一緒に任意の delivery を返せます。今の一言を自分はどう口にするか、'
+                   '間、声量、語尾など必要なときだけ短く指定する。自然な地の口調なら空文字。'
+                   '演技指示は台詞に混ぜず、人物の声は同じまま。')
+
 
 def validate_cast(cast):
     if not isinstance(cast, dict) or not all(isinstance(cast.get(k), str) and cast[k].strip()
@@ -45,14 +49,18 @@ def studio_for_pick(studio, selection):
         return studio
     cast = selection["voice_cast"]
     validate_cast(cast)
-    best = cast["candidates"][0]
+    rank = selection.get("voice_pick", cast.get("selected", 1))
+    if type(rank) is not int or not 1 <= rank <= len(cast["candidates"]):
+        raise ValueError("声の候補番号が範囲外です。")
+    best = cast["candidates"][rank-1]
     spec = studio.get("player_voice", {})
     if spec.get("factory") == "gemini_tts:GeminiVoice":
         options = dict(spec.get("options", {}))
         if cast.get("engine") == "gemini" and not options.get("voice", "").startswith(("voice_", "voicekey_")):
             options["voice"] = best["style"]
-        options["style"] = (f"{options.get('style', '')} {cast['interpretation']} "
-                            f"話す速さは通常の約{best['speed']}倍を目安にする。").strip()
+        directions = (options.get("style"), cast["interpretation"], best.get("base_direction"),
+                      f"話す速さは通常の約{best['speed']}倍を目安にする。")
+        options["style"] = " ".join(part for part in directions if part)
         return {**studio, "player_voice": {**spec, "options": options}}
     if cast.get("engine") == "gemini":
         return studio

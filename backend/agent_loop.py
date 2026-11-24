@@ -588,6 +588,7 @@ class AgentLoop:
                 if role == "first_play":
                     observe_after_s = observation_seconds(response)
                     await emit_log({"type": "narration", "message": narration,
+                                    "delivery": response.get("delivery", ""),
                                     "step": step, "planned_actions": raw_actions, "observe_after_s": observe_after_s})
                 else:
                     await emit_log(f"NARRATION: {narration}")

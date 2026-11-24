@@ -88,13 +88,18 @@ def render_post_speech(rows, cache, voice, voice_spec, choose_sentences):
         text = choices.get(i, "")
         if not text or len(text) > budget * 10:
             continue
-        identity = json.dumps([voice_spec, text], ensure_ascii=False, sort_keys=True)
+        delivery = original.get("delivery") if hasattr(voice, "write_directed") else ""
+        identity = json.dumps([voice_spec, text, delivery] if delivery else [voice_spec, text],
+                              ensure_ascii=False, sort_keys=True)
         path = cache / (hashlib.sha256(identity.encode()).hexdigest() + ".wav")
         if not path.is_file():
             with NamedTemporaryFile(dir=cache, suffix=".wav", delete=False) as tmp:
                 pending_path = Path(tmp.name)
             try:
-                voice.write(text, pending_path)
+                if delivery:
+                    voice.write_directed(text, pending_path, delivery)
+                else:
+                    voice.write(text, pending_path)
                 with wave.open(str(pending_path)) as wav:
                     if ((wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) != (1, 2, VOICE_RATE)
                             or not wav.getnframes()):

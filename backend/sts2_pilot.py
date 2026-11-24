@@ -179,12 +179,14 @@ async def capture_session(folder, window_title, process, instructions, speak, *,
             thinking_at = now
         elif isinstance(message, dict) and message.get("type") == "narration":
             text = message["message"].strip()
+            delivery = message.get("delivery")
+            delivery = delivery.strip() if isinstance(delivery, str) and text else ""
             filename = f"spoken/{len(lines):03}.wav"
             path = folder / filename
             if speak is None:
                 observed = thinking_at if thinking_at is not None else now
                 lines.append(dict(decided_at=now, thinking_at=observed, at=observed, text="",
-                                  original_text=text, speech_pending=True, spoken_file="",
+                                  original_text=text, delivery=delivery, speech_pending=True, spoken_file="",
                                   last_action=now, inputs=[], planned_actions=message.get("planned_actions", []),
                                   greeting=bool(message.get("greeting")), speech_finished_at=observed))
                 thinking_at = None
@@ -198,7 +200,7 @@ async def capture_session(folder, window_title, process, instructions, speak, *,
                 if candidate:
                     last_voice_end = end
                 lines.append(dict(decided_at=now, thinking_at=thinking_at, at=at, text=candidate,
-                                  original_text=text, spoken_file=filename if candidate else "",
+                                  original_text=text, delivery=delivery, spoken_file=filename if candidate else "",
                                   last_action=at, inputs=[], planned_actions=message.get("planned_actions", []),
                                   speech_finished_at=end))
                 thinking_at = None
@@ -219,7 +221,7 @@ async def capture_session(folder, window_title, process, instructions, speak, *,
                     silent.setparams((1, 2, 24000, 0, "NONE", ""))
                     silent.writeframes(bytes(480))
             line = {"decided_at": now, "at": time.monotonic() - started, "text": text,
-                    "spoken_file": filename, "planned_actions": message.get("planned_actions", []),
+                    "spoken_file": filename, "delivery": delivery, "planned_actions": message.get("planned_actions", []),
                     "observe_after_s": message.get("observe_after_s", 0),
                     "inputs": []}
             line["last_action"] = line["at"]

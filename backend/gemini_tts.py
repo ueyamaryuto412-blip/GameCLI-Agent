@@ -31,18 +31,24 @@ class GeminiVoice:
             self.session.headers.update({"x-goog-api-key": key})
 
     def write(self, text, path):
+        self.write_directed(text, path, "")
+
+    def write_directed(self, text, path, delivery):
+        style = self.style
+        if delivery:
+            style += f"\n同じ人物・声色のまま、この一言の口調：{delivery}"
         if self.project:
             url = (f"https://aiplatform.googleapis.com/v1/projects/{self.project}/locations/global/"
                    f"publishers/google/models/{self.model}:generateContent")
             body = {"contents": [{"role": "user", "parts": [
-                {"text": text, "speechMetadata": {"style": self.style}}]}],
+                {"text": text, "speechMetadata": {"style": style}}]}],
                 "generationConfig": {"responseModalities": ["AUDIO"],
                                      "speechConfig": {"voiceConfig": {"voice": self.voice}}}}
         else:
             url = "https://generativelanguage.googleapis.com/v1beta/interactions"
             body = {"model": self.model, "input": [{"type": "user_input", "content": [
                 {"type": "text", "text": text, "annotations": [
-                    {"type": "speech_metadata", "style": self.style}]}]}],
+                    {"type": "speech_metadata", "style": style}]}]}],
                 "response_format": {"type": "audio"},
                 "generation_config": {"speech_config": [{"voice": self.voice}]}}
         response = self.session.post(url, json=body, timeout=(10, 120), allow_redirects=False)

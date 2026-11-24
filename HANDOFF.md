@@ -52,7 +52,16 @@ codex login status
 
 ## 既存の映像を再編集する場合
 
-新しく収録する場合はGitのcloneだけで制作コードと設定がそろう。過去の元録画は旧PCのOneDrive「ドキュメント」内、`ChatGPT/youtube creater/recordings/` にある。メインPCで同じOneDriveの同期状態を確認し、必要な下記フォルダーを新しい作業ツリーの `recordings/` にコピーする。クラウドへの同期完了は確認していない。
+フランクリンの一戦を再編集するときは、メインPCのブラウザーで所有者として試写室にログインし、[編集用素材ZIP（487 MB）](https://spire-ai-screening-room.greyflute10.chatgpt.site/franklin/franklin-trial-20261124-195630-source.zip?download) をダウンロードする。下記は標準のダウンロード先に保存した場合。GameCLI-Agentのルートで実行すると、試走時と同じフォルダー構成になる。
+
+```powershell
+$zip = Join-Path $HOME 'Downloads/franklin-trial-20261124-195630-source.zip'
+if ((Get-FileHash -LiteralPath $zip).Hash -ne 'a831f93d3780a101e966677ab696ff36a6964136a6154f162a0854a4c70e6b4b') { throw 'ZIPの内容を確認してください' }
+Expand-Archive -LiteralPath $zip -DestinationPath .\recordings
+.\.venv\Scripts\python.exe -c "import sys; sys.path.insert(0,'backend'); from pathlib import Path; from produce import validate_source; print(len(validate_source(Path('recordings/franklin-trial-20261124-195630'))))"
+```
+
+検証結果は `45`。元映像 `game.mkv`、時刻付き台詞、`spoken/` の音声40本、各判断時のスクリーンショットを同梱している。旧PCの元素材の場所はOneDrive「ドキュメント」内の `ChatGPT/youtube creater/recordings/`。第1章の別収録も使う場合は下表の該当フォルダーをコピーする。
 
 | フォルダー | 用途 |
 | --- | --- |
